@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model
+namespace Game.Model.Board
 {
-    abstract class BlockType
+    interface Piece
     {
         
-
     }
 }
