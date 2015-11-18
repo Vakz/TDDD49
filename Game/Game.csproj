@@ -67,6 +67,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Board\Bank.cs" />
+    <Compile Include="Model\Board\Block.cs" />
+    <Compile Include="Model\Board\Board.cs" />
+    <Compile Include="Model\Board\Escape.cs" />
+    <Compile Include="Model\Piece.cs" />
+    <Compile Include="Model\Board\TrainStop.cs" />
+    <Compile Include="Model\Board\TravelAgency.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

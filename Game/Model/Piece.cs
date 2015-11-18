@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Game.Model
 {
-    interface Piece
+    abstract class Piece
     {
-        
+        public Point Position { get; set; }
+
+        public Piece(Point p)
+        {
+            Position = p;
+        }
     }
 }
