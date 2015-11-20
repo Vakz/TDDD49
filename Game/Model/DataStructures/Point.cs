@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model
+namespace Game.Model.DataStructures
 {
     struct Point
     {
-        Point(int x, int y) 
+        public Point(int x, int y) 
         {
-            this.x = x;
-            this.y = y;
+            X = x;
+            Y = y;
         }
-        int x;
-        int y;
+        public int X { get; set; }
+        public int Y { get; set; }
     
 
         public static bool operator ==(Point a, Point b) 
         {
-            return a.x == b.x && a.y == b.y;
+            return a.X == b.X && a.Y == b.Y;
         }
 
         public static bool operator !=(Point a, Point b) 

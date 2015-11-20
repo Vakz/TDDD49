@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model.Board
+namespace Game.Model.DataStructures
 {
     class Block
     {
@@ -25,14 +25,14 @@ namespace Game.Model.Board
     }
 }
 enum BlockType {
-    Blocked,
-    Normal,
-    Bank,
-    Hideout,
-    Telegraph,
-    EscapeAirport,
-    EscapeCheap,
-    TravelAgency,
-    PoliceStation,
-    TrainStop
+    Blocked = 0,
+    Normal = 1,
+    Bank = 2,
+    Hideout = 3,
+    Telegraph = 4,
+    EscapeAirport = 5,
+    EscapeCheap = 6,
+    TravelAgency = 7,
+    PoliceStation = 8,
+    TrainStop = 9
 }

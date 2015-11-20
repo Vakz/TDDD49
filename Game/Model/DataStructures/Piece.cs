@@ -4,15 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model
+namespace Game.Model.DataStructures
 {
-    abstract class Piece
+    class Piece
     {
+        public PieceType Type { get; protected set; }
+        
+
         public Point Position { get; set; }
 
         public Piece(Point p)
         {
+            Type = PieceType.Police;
             Position = p;
         }
+    }
+
+    public enum PieceType
+    {
+        Police,
+        Thief
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model.Board
+namespace Game.Model.DataStructures
 {
     class Board
     {
@@ -15,17 +15,27 @@ namespace Game.Model.Board
             _board = new Block[height,width];
             _pieces = new List<Piece>(pieces);
         }
-
-        public void setBlock(int x, int y, Block block)
-        {
-            _board[y, x] = block;
-        }
-
         public Block this[int x, int y]
         {
             get
             {
                 return _board[y, x];
+            }
+            set
+            {
+                _board[y, x] = value;
+            }
+        }
+
+        public Block this[Point p]
+        {
+            get
+            {
+                return this[p.X, p.Y];
+            }
+            set
+            {
+                this[p.X, p.Y] = value;
             }
         }
 

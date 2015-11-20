@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model.Board
+namespace Game.Model.DataStructures
 {
     class Escape : Block
     {
@@ -17,7 +17,7 @@ namespace Game.Model.Board
             }
         }
 
-        Escape(int cost, BlockType type)
+        public Escape(int cost, BlockType type)
             : base(type)
         {
             if (cost <= 0) throw new ArgumentException("Must have a cost");

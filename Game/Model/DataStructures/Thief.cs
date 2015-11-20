@@ -4,33 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model
+namespace Game.Model.DataStructures
 {
     class Thief : Piece
     {
         public int Money { get; set; }
 
-        private int _arrestCount = 0;
-        public int ArrestCount
-        {
-            get
-            {
-                return _arrestCount;
-            }
-            private set
-            {
-                _arrestCount = value;
-            }
-        }
-
         public bool Arrestable { get; set; }
         public int ArrestTurns { get; set; }
+        public int ArrestCount { get; private set; }
+
+        public Thief()
+        {
+            Type = PieceType.Thief;
+        }
 
         public int arrest(int turns) 
         {
             int temp = Money;
             Money = 0;
-            _arrestCount++;
+            ArrestCount++;
             Arrestable = false;
             ArrestTurns = turns;
             return temp;

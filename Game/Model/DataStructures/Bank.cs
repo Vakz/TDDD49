@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model.Board
+namespace Game.Model.DataStructures
 {
     class Bank : Block
     {
