@@ -67,15 +67,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Board\Bank.cs" />
-    <Compile Include="Model\Board\Block.cs" />
-    <Compile Include="Model\Board\Board.cs" />
-    <Compile Include="Model\Board\Escape.cs" />
-    <Compile Include="Model\Point.cs" />
-    <Compile Include="Model\Piece.cs" />
-    <Compile Include="Model\Board\TrainStop.cs" />
-    <Compile Include="Model\Board\TravelAgency.cs" />
-    <Compile Include="Model\Thief.cs" />
+    <Compile Include="Model\DataStructures\Bank.cs" />
+    <Compile Include="Model\DataStructures\Block.cs" />
+    <Compile Include="Model\DataStructures\Board.cs" />
+    <Compile Include="Model\DataStructures\BoardReader.cs" />
+    <Compile Include="Model\DataStructures\Escape.cs" />
+    <Compile Include="Model\DataStructures\Point.cs" />
+    <Compile Include="Model\DataStructures\Piece.cs" />
+    <Compile Include="Model\DataStructures\TrainStop.cs" />
+    <Compile Include="Model\DataStructures\TravelAgency.cs" />
+    <Compile Include="Model\DataStructures\Thief.cs" />
+    <Compile Include="Model\Rules\RuleEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -101,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\Logic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
