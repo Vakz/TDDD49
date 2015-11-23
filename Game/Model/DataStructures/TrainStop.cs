@@ -15,7 +15,7 @@ namespace Game.Model.DataStructures
         /// </summary>
         /// <param name="s">Stop to compare to</param>
         /// <returns>True if the instances share lines</returns>
-        bool sharesLines(TrainStop s)
+        public bool sharesLines(TrainStop s)
         {
             return _lines.Intersect(s._lines).Any();
         }

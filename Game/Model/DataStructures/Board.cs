@@ -40,7 +40,10 @@ namespace Game.Model.DataStructures
         }
 
         public void addPiece(PieceType pt) {
-
+            List<Point> spawnPoints = specialBlocks[pt == PieceType.Police ? BlockType.PoliceStation : BlockType.Hideout];
+            Point p = spawnPoints.First(s => !isOccupied(s));
+            if (p == null) throw new ArgumentException("No available block to add piece");
+            _pieces.Add(pt == PieceType.Thief ? new Thief(p) : new Piece(p));
         }
 
         public Block this[Point p]
@@ -53,6 +56,11 @@ namespace Game.Model.DataStructures
             {
                 this[p.X, p.Y] = value;
             }
+        }
+
+        public bool isOccupied(Point p)
+        {
+            return _pieces.Any(s => p == s.Position);
         }
 
         public IReadOnlyCollection<Piece> Pieces
