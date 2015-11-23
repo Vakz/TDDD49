@@ -8,7 +8,7 @@ namespace Game.Model.DataStructures
 {
     struct Point
     {
-        public Point(int x, int y) 
+        public Point(int x, int y) : this()
         {
             X = x;
             Y = y;

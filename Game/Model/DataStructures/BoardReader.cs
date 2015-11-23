@@ -2,45 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    class BoardReader
+    static class BoardReader
     {
-        private List<Point> policeStation;
-        private Point travelAgency;
-
-        public Board readBoard(string file, int nrOfPlayers)
+        public static Board readBoard(string file)
         {
             List<Piece> pieces = new List<Piece>();
             List<List<string>> boardStrings = readFile(file);
-            Board board = new Board(boardStrings[0].Count, boardStrings.Count, pieces);
+            Board board = new Board(boardStrings[0].Count, boardStrings.Count);
             for (int y = 0; y < boardStrings.Count; ++y)
             {
                 for (int x = 0; x < boardStrings[y].Count; ++x)
                 {
                     board[x, y] = parseBlock(boardStrings[y][x]);
-                    if (board[x, y].Type == BlockType.TravelAgency) travelAgency = new Point(x, y);
-                    if (board[x, y].Type == BlockType.PoliceStation) policeStation.Add(new Point(x, y));
                 }
             }
 
             return board;
         }
 
-        private List<List<string>> readFile(string file) {
+        private static List<List<string>> readFile(string file) {
             List<List<string>> board = new List<List<string>>();
             string line;
             System.IO.StreamReader f = new System.IO.StreamReader(file);
             while ((line = f.ReadLine()) != null)
             {
-                board.Add(line.Split().ToList<string>());
+                board.Add(Regex.Split(line, @"\s+").ToList<string>());
             }
             return board;
         }
 
-        private Block parseBlock(string block)
+        private static Block parseBlock(string block)
         {
             switch (block[0])
             {

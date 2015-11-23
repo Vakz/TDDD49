@@ -10,11 +10,18 @@ namespace Game.Model.DataStructures
     {
         private Block[,] _board;
         private List<Piece> _pieces;
+        private Dictionary<BlockType, List<Point>> specialBlocks = new Dictionary<BlockType, List<Point>>();
 
-        public Board(int width, int height, List<Piece> pieces) {
+        public Board(int width, int height) {
             _board = new Block[height,width];
-            _pieces = new List<Piece>(pieces);
+            _pieces = new List<Piece>();
+
+            foreach (BlockType bt in Enum.GetValues(typeof(BlockType)))
+            {
+                specialBlocks.Add(bt, new List<Point>());
+            }
         }
+
         public Block this[int x, int y]
         {
             get
@@ -23,8 +30,17 @@ namespace Game.Model.DataStructures
             }
             set
             {
+                if (_board[y,x] != null && _board[y,x].Type != BlockType.Blocked) throw new ArgumentException("Cannot overwrite non-blocked block");
+                if (value.Type != BlockType.Normal)
+                {
+                    specialBlocks[value.Type].Add(new Point(x, y));
+                }
                 _board[y, x] = value;
             }
+        }
+
+        public void addPiece(PieceType pt) {
+
         }
 
         public Block this[Point p]

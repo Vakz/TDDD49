@@ -14,7 +14,7 @@ namespace Game.Model.DataStructures
         public int ArrestTurns { get; set; }
         public int ArrestCount { get; private set; }
 
-        public Thief()
+        public Thief(Point p) : base(p)
         {
             Type = PieceType.Thief;
         }

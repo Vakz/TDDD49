@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Game.Model.DataStructures;
 
 namespace Game
 {
@@ -23,6 +24,11 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
+            InitializeGame();
+        }
+
+        private void InitializeGame() {
+            Board board = BoardReader.readBoard("board.txt");
         }
     }
 }
