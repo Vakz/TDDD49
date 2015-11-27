@@ -78,6 +78,7 @@
     <Compile Include="Model\DataStructures\TravelAgency.cs" />
     <Compile Include="Model\DataStructures\Thief.cs" />
     <Compile Include="Model\Logic\LogicEngine.cs" />
+    <Compile Include="Model\Logic\PathFinder.cs" />
     <Compile Include="Model\Rules\RuleEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

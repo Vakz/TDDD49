@@ -37,6 +37,7 @@ namespace Game.Model.Rules
 
         private bool canPass(BlockType t, Piece p)
         {
+            //TODO: check if p can pass the piece on (current?) position
             return (p.Type == PieceType.Police && t == BlockType.Bank) || isAllowedOn(t, p);
         }
         
