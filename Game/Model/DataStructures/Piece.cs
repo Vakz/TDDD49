@@ -9,9 +9,10 @@ namespace Game.Model.DataStructures
     class Piece
     {
         public PieceType Type { get; protected set; }
-        
-
+       
         public Point Position { get; set; }
+
+        public int TurnsOnCurrentPosition { get; set; }
 
         public Piece(Point p)
         {

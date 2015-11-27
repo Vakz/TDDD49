@@ -97,5 +97,17 @@ namespace Game.Model.Rules
         private bool validEscapeArrest(Thief t) {
             return t.Arrestable && (_board[t.Position].Type == BlockType.EscapeAirport || _board[t.Position].Type == BlockType.EscapeCheap);
         }
+
+        public bool isAllowedToSkipTurn(Piece p) {
+            if (p.Type == PieceType.Thief) return false;
+            if (p.TurnsOnCurrentPosition < 2) return true;
+            if (_board[p.Position].Type == BlockType.TravelAgency) return false;
+            return !nextToEscape(p.Position);
+        }
+
+        private bool nextToEscape(Point p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
