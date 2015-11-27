@@ -29,7 +29,7 @@ namespace Game.Model.DataStructures
             return temp;
         }
 
-        private Dictionary<Point, int> _hiddenMoney;
+        private Dictionary<Point, int> _hiddenMoney = new Dictionary<Point,int>();
 
         public void hideMoney()
         {

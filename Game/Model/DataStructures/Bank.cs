@@ -23,5 +23,9 @@ namespace Game.Model.DataStructures
         {
             Money = money;
         }
+
+        public int rob() {
+            return Money;
+        }
     }
 }

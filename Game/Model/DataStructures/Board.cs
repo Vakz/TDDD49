@@ -90,5 +90,10 @@ namespace Game.Model.DataStructures
                 return _board.GetLength(1);
             }
         }
+
+        public Point getUnoccupiedByBlockType(BlockType type)
+        {
+            return specialBlocks[type].First(b => !isOccupied(b));
+        }
     }
 }

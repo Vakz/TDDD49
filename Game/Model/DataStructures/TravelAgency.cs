@@ -18,5 +18,12 @@ namespace Game.Model.DataStructures
         {
             Money += money;
         }
+
+        public new int rob()
+        {
+            int temp = Money;
+            Money = 0;
+            return temp;
+        }
     }
 }

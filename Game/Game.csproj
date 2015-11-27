@@ -77,6 +77,7 @@
     <Compile Include="Model\DataStructures\TrainStop.cs" />
     <Compile Include="Model\DataStructures\TravelAgency.cs" />
     <Compile Include="Model\DataStructures\Thief.cs" />
+    <Compile Include="Model\Logic\LogicEngine.cs" />
     <Compile Include="Model\Rules\RuleEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -104,9 +105,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Logic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

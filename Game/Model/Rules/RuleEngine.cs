@@ -58,5 +58,44 @@ namespace Game.Model.Rules
                     return false;
             }
         }
+
+        public void robBank(Thief t, Bank b) {
+            t.Money += b.rob();
+            t.Arrestable = true;
+        }
+
+        public int arrest(Thief t, Piece p)
+        {
+            if (!(p.Type == PieceType.Police)) throw new ArgumentException("Arresting piece must be of type Police");
+            int money = t.arrest(Logic.LogicEngine.diceRoll());
+            t.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
+            p.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
+            // Police gets 1000 for every started 5000
+            // TODO: Fix this
+            return t.Money > 0 ? (money / 5000 + 1) * 1000 : 0;
+        }
+
+        public bool allThievesArrested()
+        {
+            return _board.Pieces.Any(s => s.Type == PieceType.Thief && ((Thief)s).ArrestTurns > 0);
+        }
+
+        public void stopEscape(Piece p)
+        {
+            if (p.Type != PieceType.Police) return;
+            try
+            {
+                Piece arrestTarget = _board.Pieces.First(b => b.Type == PieceType.Thief && validEscapeArrest((Thief)b));
+                arrest((Thief)arrestTarget, p);
+            }
+            catch (Exception e)
+            {
+                return;
+            }
+        }
+
+        private bool validEscapeArrest(Thief t) {
+            return t.Arrestable && (_board[t.Position].Type == BlockType.EscapeAirport || _board[t.Position].Type == BlockType.EscapeCheap);
+        }
     }
 }
