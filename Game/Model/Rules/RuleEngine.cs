@@ -21,7 +21,7 @@ namespace Game.Model.Rules
             if (_board[dest].Type == BlockType.Blocked) { return false; } // Is inaccessible block
             if (_board.isOccupied(dest)) { return false; }
             if (!isAllowedOn(_board[dest].Type, piece)) { return false;  }
-            if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop)
+            if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop && piece.TrainMovementStreak <= 2)
             {
                 if (((TrainStop)_board[piece.Position]).sharesLines((TrainStop)_board[dest])) {
                     return true;
@@ -71,13 +71,12 @@ namespace Game.Model.Rules
             t.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
             p.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
             // Police gets 1000 for every started 5000
-            // TODO: Fix this
-            return t.Money > 0 ? (money / 5000 + 1) * 1000 : 0;
+            return ((money - 1) / 5000 + 1) * 1000;
         }
 
         public bool allThievesArrested()
         {
-            return _board.Pieces.Any(s => s.Type == PieceType.Thief && ((Thief)s).ArrestTurns > 0);
+            return !(_board.Pieces.Any(s => s.Type == PieceType.Thief && ((Thief)s).ArrestTurns == 0));
         }
 
         public void stopEscape(Piece p)
@@ -107,7 +106,10 @@ namespace Game.Model.Rules
 
         private bool nextToEscape(Point p)
         {
-            throw new NotImplementedException();
+            return _board.isEscape(p + new Point(0, 1)) ||
+                   _board.isEscape(p - new Point(0, 1)) ||
+                   _board.isEscape(p + new Point(1, 0)) ||
+                   _board.isEscape(p - new Point(1, 0));
         }
     }
 }

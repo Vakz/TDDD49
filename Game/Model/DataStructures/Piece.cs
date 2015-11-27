@@ -14,6 +14,8 @@ namespace Game.Model.DataStructures
 
         public int TurnsOnCurrentPosition { get; set; }
 
+        public int TrainMovementStreak { get; set; }
+
         public Piece(Point p)
         {
             Type = PieceType.Police;

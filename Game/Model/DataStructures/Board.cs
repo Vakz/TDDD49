@@ -95,5 +95,10 @@ namespace Game.Model.DataStructures
         {
             return specialBlocks[type].First(b => !isOccupied(b));
         }
+
+        public bool isEscape(Point p)
+        {
+            return this[p].Type == BlockType.EscapeCheap || this[p].Type == BlockType.EscapeAirport;
+        }
     }
 }
