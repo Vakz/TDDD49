@@ -11,13 +11,15 @@ namespace Game.Model.Logic
 {
     class PathFinder
     {
-        private int[,]  costs;
-        private int     width;
-        private int     height;
-        private Board   board;
+        private int[,]      costs;
+        private int         width;
+        private int         height;
+        private Board       board;
+        private RuleEngine  rules;
 
-        PathFinder(Board board) {
+        PathFinder(Board board, RuleEngine rules) {
             this.board  = board;
+            this.rules = rules;
             this.width  = board.Width;
             this.height = board.Height;
 
@@ -33,24 +35,50 @@ namespace Game.Model.Logic
             }
         }
 
-        private void updateCosts( Point pos, int cost=0 ) {
+        private void updateCosts( Piece p, Point pos, int cost=0 ){
+            // ingen får gå utanför kartan:
             if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
+
+            if ( !rules.canPass( board[pos].Type, p ) ) return;
 
             if (cost < costs[pos.X, pos.Y]) {
                 //sätt kostnad:
                 costs[pos.X, pos.Y] = cost;
                 //kolla grannar:
                 Point[] neighbours = new Point[] {
-                    new Point(pos.X+1, pos.Y),
-                    new Point(pos.X, pos.Y+1),
-                    new Point(pos.X-1, pos.Y),
-                    new Point(pos.X, pos.Y-1)
+                    pos + new Point( 1, 0 ), pos + new Point( 0, 1 ),
+                    pos + new Point(-1, 0 ), pos + new Point( 0,-1 ),
                 };
 
-                foreach (Point p in neighbours){
-                    //TODO: check neighbours
+                foreach (Point pt in neighbours){
+                    updateCosts(p, pt, cost + 1);
                 }
             }
+        }
+
+        public List<Point> getShortestPath( Piece p, Point goal ){
+            updateCosts(p, goal);
+            List<Point> path = new List<Point> { p.Position };
+            
+            Point[] neighbour_offset = new Point[] {
+                new Point( 1, 0 ), new Point( 0, 1 ),
+                new Point(-1, 0 ), new Point( 0,-1 ),
+            };
+
+            Point pos = p.Position;
+            /* om det inte fungerar helt så kolla *
+             * gärna om i ska börja på 1 eller 0  */
+            for ( int i = 1; i < costs[p.Position.X,p.Position.Y]; i++ ){
+                Point min_pos = pos + neighbour_offset[0];
+                for ( int n = 1; n < 4; n++ ){
+                    Point neighbour = pos + neighbour_offset[n];
+                    if ( costs[neighbour.X, neighbour.Y] < costs[min_pos.X, min_pos.Y] ){
+                        min_pos = neighbour;
+                    }
+                }
+                path.Add( min_pos );
+            }
+            return path;
         }
     }
 }
