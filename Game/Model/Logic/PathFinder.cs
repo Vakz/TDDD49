@@ -27,10 +27,9 @@ namespace Game.Model.Logic
         }
 
         private void resetCosts() {
-            int MAX_COST = width * height + 1;
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    costs[x, y] = MAX_COST;
+                    costs[x, y] = int.MaxValue;
                 }
             }
         }
@@ -38,6 +37,7 @@ namespace Game.Model.Logic
         private void updateCosts( Piece p, Point pos, int cost=0 ){
             // ingen får gå utanför kartan:
             if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
+            if (costs[pos.X, pos.Y] <= cost) return;
 
             if ( !rules.canPass( board[pos].Type, p ) ) return;
 
@@ -57,27 +57,31 @@ namespace Game.Model.Logic
         }
 
         public List<Point> getShortestPath( Piece p, Point goal ){
+            List<Point> path = new List<Point>();
+
+            resetCosts();
             updateCosts(p, goal);
-            List<Point> path = new List<Point> { p.Position };
-            
+
+            if (costs[p.Position.X, p.Position.Y] == int.MaxValue) return path;
+            if (p.Position == goal) return path;
+
             Point[] neighbour_offset = new Point[] {
                 new Point( 1, 0 ), new Point( 0, 1 ),
                 new Point(-1, 0 ), new Point( 0,-1 ),
             };
 
-            Point pos = p.Position;
             /* om det inte fungerar helt så kolla *
              * gärna om i ska börja på 1 eller 0  */
-            for ( int i = 1; i < costs[p.Position.X,p.Position.Y]; i++ ){
-                Point min_pos = pos + neighbour_offset[0];
-                for ( int n = 1; n < 4; n++ ){
-                    Point neighbour = pos + neighbour_offset[n];
+            Point min_pos = p.Position;
+            do{
+                for ( int n = 0; n < 4; n++ ){
+                    Point neighbour = min_pos + neighbour_offset[n];
                     if ( costs[neighbour.X, neighbour.Y] < costs[min_pos.X, min_pos.Y] ){
                         min_pos = neighbour;
                     }
                 }
                 path.Add( min_pos );
-            }
+            } while ( min_pos != goal );
             return path;
         }
     }

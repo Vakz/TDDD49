@@ -12,6 +12,8 @@ namespace Game.Model.DataStructures
         private List<Piece> _pieces;
         private Dictionary<BlockType, List<Point>> specialBlocks = new Dictionary<BlockType, List<Point>>();
 
+
+
         public Board(int width, int height) {
             _board = new Block[height,width];
             _pieces = new List<Piece>();

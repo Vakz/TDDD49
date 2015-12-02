@@ -11,7 +11,7 @@ namespace Game.Model.Rules
     {
         private Board _board;
 
-        RuleEngine(Board board)
+        public RuleEngine(Board board)
         {
             _board = board;
         }
@@ -19,7 +19,7 @@ namespace Game.Model.Rules
         public bool canMoveTo(Piece piece, Point dest)
         {
             if (_board[dest].Type == BlockType.Blocked) { return false; } // Is inaccessible block
-            if (_board.isOccupied(dest)) { return false; }
+            if (_board.isOccupied(dest) && !canArrestAt(piece, dest)) { return false; }
             if (!isAllowedOn(_board[dest].Type, piece)) { return false;  }
             if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop && piece.TrainMovementStreak <= 2)
             {
@@ -40,8 +40,15 @@ namespace Game.Model.Rules
             //TODO: check if p can pass the piece on (current?) position
             return (p.Type == PieceType.Police && t == BlockType.Bank) || isAllowedOn(t, p);
         }
+
+        public bool canArrestAt(Piece p, Point pt)
+        {
+            if (p.Type != PieceType.Police) return false;
+            if (_board.getPieceAt(pt).Type != PieceType.Thief) return false;
+            return (((Thief)_board.getPieceAt(pt)).Arrestable);
+        }
         
-        private bool isAllowedOn(BlockType t, Piece p) {
+        public bool isAllowedOn(BlockType t, Piece p) {
             switch(t)
             {
                 case BlockType.PoliceStation:

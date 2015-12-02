@@ -10,6 +10,7 @@ namespace Game.Model
     class ThiefPlayer : Player
     {
         private Thief _piece;
+        private bool _active;
 
         public bool Active
         {
@@ -17,15 +18,17 @@ namespace Game.Model
             {
                 return _active && _piece.ArrestTurns == 0;
             }
-            set
-            {
-                _active = value;
-            }
+            set;
         }
 
         public ThiefPlayer(Point startingPosition)
         {
             _piece = new Thief(startingPosition);
+        }
+
+        public bool allowedToMovePiece(Piece p)
+        {
+            return Active && p.Position == _piece.Position;
         }
     }
 }

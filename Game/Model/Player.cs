@@ -8,9 +8,7 @@ using Game.Model.DataStructures;
 namespace Game.Model
 {
     class Player
-    {        
-        protected bool _active; // Whether the player is allowed to move
-        public abstract bool Active;
+    {
         private bool _alive; // Whether the player is still in the game
         public bool Alive
         {
@@ -20,7 +18,6 @@ namespace Game.Model
             }
             set
             {
-                Active = value; // A player which is out of the game is also not Active
                 _alive = value;
             }
         }
@@ -37,6 +34,13 @@ namespace Game.Model
             }
         }
 
+        /// <summary>
+        /// Used to make sure the piece a player is attempting to move is actually
+        /// a piece they are allowed to move. For a police player, ensures the piece
+        /// is a police piece. For a thief, makes sure it is the piece belonging to that player
+        /// </summary>
+        /// <param name="p">The piece to be moved</param>
+        /// <returns>True if player is allowed to move p</returns>
         public abstract bool allowedToMovePiece(Piece p);
     }
 
