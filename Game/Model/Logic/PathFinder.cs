@@ -19,7 +19,7 @@ namespace Game.Model.Logic
 
         PathFinder(Board board, RuleEngine rules) {
             this.board  = board;
-            this.rules = rules;
+            this.rules  = rules;
             this.width  = board.Width;
             this.height = board.Height;
 
