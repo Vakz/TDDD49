@@ -9,26 +9,26 @@ namespace Game.Model
 {
     class ThiefPlayer : Player
     {
-        private Thief _piece;
+        public Thief Piece { get; private set; }
         private bool _active;
 
         public bool Active
         {
             get
             {
-                return _active && _piece.ArrestTurns == 0;
+                return _active && Piece.ArrestTurns == 0;
             }
             set;
         }
 
         public ThiefPlayer(Point startingPosition)
         {
-            _piece = new Thief(startingPosition);
+            Piece = new Thief(startingPosition);
         }
 
         public bool allowedToMovePiece(Piece p)
         {
-            return Active && p.Position == _piece.Position;
+            return Active && p.Position == Piece.Position;
         }
     }
 }

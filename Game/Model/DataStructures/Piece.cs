@@ -12,6 +12,10 @@ namespace Game.Model.DataStructures
        
         public Point Position { get; set; }
 
+        public bool Alive { get; set; }
+
+        public bool Active { get; set; }
+
         public int TurnsOnCurrentPosition { get; set; }
 
         public int TrainMovementStreak { get; set; }

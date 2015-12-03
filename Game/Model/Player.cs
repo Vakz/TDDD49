@@ -9,18 +9,7 @@ namespace Game.Model
 {
     class Player
     {
-        private bool _alive; // Whether the player is still in the game
-        public bool Alive
-        {
-            get
-            {
-                return _alive;
-            }
-            set
-            {
-                _alive = value;
-            }
-        }
+
         private int _money;
         public int Money
         {

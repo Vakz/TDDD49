@@ -9,31 +9,31 @@ namespace Game.Model
 {
     class PolicePlayer : Player
     {
-        Dictionary<Piece, bool> _pieces = new Dictionary<Piece, bool>();
+        List<Piece> _pieces = new List<Piece>();
 
         // Set whether a police piece is active or not
-        public bool this[Piece p]
+        public bool this[Point pt]
         {
             get
             {
-                return _pieces[p];
+                return _pieces.First(s => s.Position == pt).Active;
             }
             set
             {
-                _pieces[p] = value;
+                _pieces.First(s => s.Position == pt).Active = value;
             }
         }
 
         public PolicePlayer(List<Point> policeSpawnpoints)
         {
             foreach (Point pt in policeSpawnpoints) {
-                _pieces.Add(new Piece(pt), true);
+                _pieces.Add(new Piece(pt));
             }
         }
 
         public bool allowedToMovePiece(Piece p)
         {
-            return _pieces.ContainsKey(p) && _pieces[p];
+            return p.Type == PieceType.Police && p.Active;
         }
     }
 }
