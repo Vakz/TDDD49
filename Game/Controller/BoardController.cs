@@ -13,7 +13,7 @@ namespace Game.Controller
     class GameController
     {
         private Board board = BoardReader.readBoard("board.txt");
-        private List<Player> players; // Used to keep track of current player
+        private List<Player> players = new List<Player>(); // Used to keep track of current player
         private List<ThiefPlayer> thiefPlayers = new List<ThiefPlayer>();
         private PolicePlayer policePlayer;
         private int aliveThiefPlayers = 0;
@@ -42,7 +42,7 @@ namespace Game.Controller
                 }
                 // One more police pieces than thieves
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new ArgumentException("Attempted to add more thieves than there are hideouts");
             }           
@@ -88,6 +88,11 @@ namespace Game.Controller
             return true;
         }
 
+        public bool skipTurn(Piece p)
+        {
+            return ruleEngine.isAllowedToSkipTurn(p);
+        }
+
         private bool movedByTrain(Point origin, Point dest)
         {
             return board[origin].Type == BlockType.TrainStop && board[dest].Type == BlockType.TrainStop;
@@ -99,6 +104,8 @@ namespace Game.Controller
             // If all thieves arrested or no thief pieces on the board, end the game
             GameRunning = thiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
         }
+
+        
 
         public void nextPlayer()
         {

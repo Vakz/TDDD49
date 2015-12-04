@@ -10,7 +10,7 @@ namespace Game.Model.DataStructures
     {
         private Block[,] _board;
         private List<Piece> _pieces;
-        private Dictionary<BlockType, List<Point>> specialBlocks = new Dictionary<BlockType, List<Point>>();
+        public Dictionary<BlockType, List<Point>> SpecialBlocks { get; private set; }
 
 
 
@@ -18,11 +18,14 @@ namespace Game.Model.DataStructures
             _board = new Block[height,width];
             _pieces = new List<Piece>();
 
+            SpecialBlocks = new Dictionary<BlockType, List<Point>>();
             foreach (BlockType bt in Enum.GetValues(typeof(BlockType)))
             {
-                specialBlocks.Add(bt, new List<Point>());
+                SpecialBlocks.Add(bt, new List<Point>());
             }
         }
+
+
 
         public Block this[int x, int y]
         {
@@ -35,14 +38,14 @@ namespace Game.Model.DataStructures
                 if (_board[y,x] != null && _board[y,x].Type != BlockType.Blocked) throw new ArgumentException("Cannot overwrite non-blocked block");
                 if (value.Type != BlockType.Normal)
                 {
-                    specialBlocks[value.Type].Add(new Point(x, y));
+                    SpecialBlocks[value.Type].Add(new Point(x, y));
                 }
                 _board[y, x] = value;
             }
         }
 
         public void addPiece(PieceType pt) {
-            List<Point> spawnPoints = specialBlocks[pt == PieceType.Police ? BlockType.PoliceStation : BlockType.Hideout];
+            List<Point> spawnPoints = SpecialBlocks[pt == PieceType.Police ? BlockType.PoliceStation : BlockType.Hideout];
             Point p = spawnPoints.First(s => !isOccupied(s));
             if (p == null) throw new ArgumentException("No available block to add piece");
             _pieces.Add(pt == PieceType.Thief ? new Thief(p) : new Piece(p));
@@ -74,7 +77,14 @@ namespace Game.Model.DataStructures
         }
 
         public Piece getPieceAt(Point p) {
-            return _pieces.First(s => s.Position == p);
+            try
+            {
+                return _pieces.First(s => s.Position == p);
+            }
+            catch(Exception) {
+                return null;
+            }
+            
         }
 
         public int Height
@@ -95,7 +105,7 @@ namespace Game.Model.DataStructures
 
         public Point getUnoccupiedByBlockType(BlockType type)
         {
-            return specialBlocks[type].First(b => !isOccupied(b));
+            return SpecialBlocks[type].First(b => !isOccupied(b));
         }
 
         public bool isEscape(Point p)

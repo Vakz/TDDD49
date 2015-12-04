@@ -60,12 +60,12 @@ namespace Game.Model.Logic
             updateCosts(p, p.Position, canPass);
 
             Point closest_point = Point.error();
-            for ( Point POI in POIs ){
+            foreach ( Point POI in POIs ){
                 try {
                     if (costs[POI.X,POI.Y] < costs[closest_point.X,closest_point.Y]){
                         closest_point = POI;
                     }
-                } catch (IndexOutOfRangeException e) { /* Ignore error_point */}
+                } catch (IndexOutOfRangeException) { /* Ignore error_point */}
             }
             return closest_point;
         

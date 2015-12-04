@@ -24,7 +24,7 @@ namespace Game.Model.Rules
             if (!LogicEngine.containedIn(dest, _board.Height, _board.Width)) return false;
             if (_board[dest].Type == BlockType.Blocked) return false;
             if (_board.isOccupied(dest) && !canArrestAt(piece, dest)) return false;
-            if (!isAllowedOn(_board[dest].Type, piece)) return false;
+            if (!isAllowedOn(dest, piece)) return false;
             if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop && piece.TrainMovementStreak <= MAX_TURNS_BY_TRAIN)
             {
                 if (((TrainStop)_board[piece.Position]).sharesLines((TrainStop)_board[dest])) {
@@ -39,21 +39,23 @@ namespace Game.Model.Rules
             throw new NotImplementedException();
         }
 
-        public bool canPass(BlockType t, Piece p)
+        public bool canPass(Point pt, Piece p)
         {
-            //TODO: check if p can pass the piece on (current?) position
-            return (p.Type == PieceType.Police && t == BlockType.Bank) || isAllowedOn(t, p);
+            
+            return (p.Type == PieceType.Police && _board[pt].Type == BlockType.Bank) || isAllowedOn(pt, p);
         }
 
         public bool canArrestAt(Piece p, Point pt)
         {
             if (p.Type != PieceType.Police) return false;
             if (_board.getPieceAt(pt).Type != PieceType.Thief) return false;
-            return (((Thief)_board.getPieceAt(pt)).Arrestable);
+            Piece arrestTarget = _board.getPieceAt(pt);
+            if (arrestTarget == null) return false;
+            return (((Thief)arrestTarget).Arrestable);
         }
         
-        public bool isAllowedOn(BlockType t, Piece p) {
-            switch(t)
+        public bool isAllowedOn(Point pt, Piece p) {
+            switch(_board[pt].Type)
             {
                 case BlockType.PoliceStation:
                     return p.Type == PieceType.Police;
@@ -103,7 +105,7 @@ namespace Game.Model.Rules
                 Piece arrestTarget = _board.Pieces.First(b => b.Type == PieceType.Thief && validEscapeArrest((Thief)b));
                 arrest((Thief)arrestTarget, p);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }
@@ -123,7 +125,7 @@ namespace Game.Model.Rules
 
         public void removePieceFromGame(Piece p)
         {
-            p.Position = new Point(-1, -1);
+            p.Position = Point.error();
             p.Active = false;
             p.Alive = false;
         }
