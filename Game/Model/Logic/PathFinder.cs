@@ -36,13 +36,13 @@ namespace Game.Model.Logic
         public delegate bool canPassCheck( BlockType bt, Piece p );
 
         private void updateCosts( Piece p, Point pos, canPassCheck canPass, int cost=0 ){
-            // ingen får gå utanför kartan:
+            // ingen spelare får gå utanför kartan:
             if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
             if (costs[pos.X, pos.Y] <= cost) return;
 
             if ( !canPass( board[pos].Type, p ) ) return;
 
-            if (cost < costs[pos.X, pos.Y]) {
+            if (cost < costs[pos.X, pos.Y]) { 
                 //sätt kostnad:
                 costs[pos.X, pos.Y] = cost;
                 //kolla grannar:
