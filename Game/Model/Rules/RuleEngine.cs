@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
+using Game.Model.Logic;
 
 namespace Game.Model.Rules
 {
     class RuleEngine
     {
         private Board _board;
-        public static const int MAX_ARRESTS = 4;
+        public const int MAX_ARRESTS = 4;
+        public const int MAX_TURNS_BY_TRAIN = 2;
 
         public RuleEngine(Board board)
         {
@@ -19,10 +21,11 @@ namespace Game.Model.Rules
 
         public bool canMoveTo(Piece piece, Point dest)
         {
-            if (_board[dest].Type == BlockType.Blocked) { return false; } // Is inaccessible block
-            if (_board.isOccupied(dest) && !canArrestAt(piece, dest)) { return false; }
-            if (!isAllowedOn(_board[dest].Type, piece)) { return false;  }
-            if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop && piece.TrainMovementStreak <= 2)
+            if (!LogicEngine.containedIn(dest, _board.Height, _board.Width)) return false;
+            if (_board[dest].Type == BlockType.Blocked) return false;
+            if (_board.isOccupied(dest) && !canArrestAt(piece, dest)) return false;
+            if (!isAllowedOn(_board[dest].Type, piece)) return false;
+            if (_board[piece.Position].Type == BlockType.TrainStop && _board[dest].Type == BlockType.TrainStop && piece.TrainMovementStreak <= MAX_TURNS_BY_TRAIN)
             {
                 if (((TrainStop)_board[piece.Position]).sharesLines((TrainStop)_board[dest])) {
                     return true;
@@ -80,7 +83,11 @@ namespace Game.Model.Rules
             t.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
             p.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
             // Police gets 1000 for every started 5000
-            return ((money - 1) / 5000 + 1) * 1000;
+            return calcArrestMoney(money);
+        }
+
+        private int calcArrestMoney(int money) {
+            return ((money - 1) / 500 + 1) * 1000;
         }
 
         public bool allThievesArrested()

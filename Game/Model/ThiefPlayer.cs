@@ -18,7 +18,7 @@ namespace Game.Model
             {
                 return _active && Piece.ArrestTurns == 0;
             }
-            set;
+            set { _active = value;}
         }
 
         public ThiefPlayer(Point startingPosition)
@@ -26,7 +26,7 @@ namespace Game.Model
             Piece = new Thief(startingPosition);
         }
 
-        public bool allowedToMovePiece(Piece p)
+        public override bool allowedToMovePiece(Piece p)
         {
             return Active && p.Position == Piece.Position;
         }

@@ -23,29 +23,52 @@ namespace Game.Controller
 
         public GameController(int nrOfPlayers) {
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
-            try {
-                List<Point> policeSpawnpoints = new List<Point>();
-                for (int i = 0; i < nrOfPlayers - 1; ++i) {
-                    policeSpawnpoints.Add(board.getUnoccupiedByBlockType(BlockType.PoliceStation));
-                    thiefPlayers.Add(new ThiefPlayer(board.getUnoccupiedByBlockType(BlockType.Hideout)));
-                    aliveThiefPlayers++;
-                }
-                // One more police pieces than thieves
-                policeSpawnpoints.Add(board.getUnoccupiedByBlockType(BlockType.PoliceStation));
-                policePlayer = new PolicePlayer(policeSpawnpoints);
-            }
-            catch(Exception e) {
-                throw new ArgumentException("Attempted to add more thieves than there are hideouts");
-            }
-            players = new List<Player>(thiefPlayers);
-            players.Add(policePlayer);
+            addThiefPlayers(nrOfPlayers - 1);
+            addPolicePlayer(nrOfPlayers);
             ruleEngine = new RuleEngine(board);
             GameRunning = true;
         }
 
-        public void movePiece(Piece p, Point pt) {
-            if (!players[CurrentPlayerIndex].allowedToMovePiece(p)) return;
-            else if (!ruleEngine.canMoveTo(p, pt)) return;
+        private void addThiefPlayers(int nrOfPlayers)
+        {
+            try
+            {
+                for (int i = 0; i < nrOfPlayers - 1; ++i)
+                {
+                    ThiefPlayer tp = new ThiefPlayer(board.getUnoccupiedByBlockType(BlockType.Hideout));
+                    thiefPlayers.Add(tp);
+                    players.Add(tp);
+                    aliveThiefPlayers++;
+                }
+                // One more police pieces than thieves
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Attempted to add more thieves than there are hideouts");
+            }           
+        }
+
+        private void addPolicePlayer(int nrOfPolice)
+        {
+            List<Point> spawnpoints = new List<Point>();
+            for (int i = 0; i < nrOfPolice; ++i)
+            {
+                spawnpoints.Add(board.getUnoccupiedByBlockType(BlockType.PoliceStation));
+            }
+            policePlayer = new PolicePlayer(spawnpoints);
+            players.Add(policePlayer);
+
+        }
+
+        /// <summary>
+        /// Moves a piece to the target destination if allowed
+        /// </summary>
+        /// <param name="p">Piece to be moved</param>
+        /// <param name="pt">Destination</param>
+        /// <returns>True if move was successful</returns>
+        public bool movePiece(Piece p, Point pt) {
+            if (!players[CurrentPlayerIndex].allowedToMovePiece(p)) return false;
+            else if (!ruleEngine.canMoveTo(p, pt)) return false;
             else if (ruleEngine.canArrestAt(p, pt))
             {
                 Thief arrestTarget = (Thief)board.getPieceAt(pt);
@@ -53,12 +76,21 @@ namespace Game.Controller
                 if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
                 {
                     ruleEngine.removePieceFromGame(p);
-                    ruleEngine.removePieceFromGame(arrestTarget);
-
+                    ruleEngine.removePieceFromGame(arrestTarget);  
                 }
             }
-            else p.Position = pt;
+            else
+            {
+                if (movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
+                p.Position = pt;
+            }
             p.TurnsOnCurrentPosition++;
+            return true;
+        }
+
+        private bool movedByTrain(Point origin, Point dest)
+        {
+            return board[origin].Type == BlockType.TrainStop && board[dest].Type == BlockType.TrainStop;
         }
 
         public void endTurn()

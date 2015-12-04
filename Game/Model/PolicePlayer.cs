@@ -31,7 +31,7 @@ namespace Game.Model
             }
         }
 
-        public bool allowedToMovePiece(Piece p)
+        public override bool allowedToMovePiece(Piece p)
         {
             return p.Type == PieceType.Police && p.Active;
         }

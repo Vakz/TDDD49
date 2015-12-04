@@ -7,10 +7,10 @@ using Game.Model.DataStructures;
 
 namespace Game.Model
 {
-    class Player
+    abstract class Player
     {
 
-        private int _money;
+        private int _money = 0;
         public int Money
         {
             get
@@ -20,6 +20,7 @@ namespace Game.Model
             set
             {
                 if (value < 0) throw new ArgumentException("Cannot set negative money");
+                _money = value;
             }
         }
 
