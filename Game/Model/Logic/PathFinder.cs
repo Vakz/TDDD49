@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Game.Model.DataStructures;
-using Game.Model.Rules;
 
 namespace Game.Model.Logic
 {
@@ -34,12 +33,14 @@ namespace Game.Model.Logic
             }
         }
 
-        private void updateCosts( Piece p, Point pos, int cost=0 ){
+        public delegate bool canPassCheck( BlockType bt, Piece p );
+
+        private void updateCosts( Piece p, Point pos, canPassCheck canPass, int cost=0 ){
             // ingen får gå utanför kartan:
             if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
             if (costs[pos.X, pos.Y] <= cost) return;
 
-            if ( !rules.canPass( board[pos].Type, p ) ) return;
+            if ( !canPass( board[pos].Type, p ) ) return;
 
             if (cost < costs[pos.X, pos.Y]) {
                 //sätt kostnad:
@@ -51,16 +52,16 @@ namespace Game.Model.Logic
                 };
 
                 foreach (Point pt in neighbours){
-                    updateCosts(p, pt, cost + 1);
+                    updateCosts(p, pt,canPass, cost + 1);
                 }
             }
         }
 
-        public List<Point> getShortestPath( Piece p, Point goal ){
+        public List<Point> getShortestPath( Piece p, Point goal, canPassCheck canPass ){
             List<Point> path = new List<Point>();
 
             resetCosts();
-            updateCosts(p, goal);
+            updateCosts(p, goal, canPass);
 
             if (costs[p.Position.X, p.Position.Y] == int.MaxValue) return path;
             if (p.Position == goal) return path;
