@@ -58,14 +58,16 @@ namespace Game.Model.Logic
         public Point getClosestPointOfInterest(Piece p, List<Point> POIs, canPassCheck canPass){
             resetCosts();
             updateCosts(p, p.Position, canPass);
-
+            //TODO: fix this mess of finding closest POI
             Point closest_point = Point.error();
             for ( Point POI in POIs ){
                 try {
-                    if (costs[POI.X,POI.Y] < costs[closest_point.X,closest_point.Y]){
+                    if (costs[POI.X,POI.Y] < costs[closest_point.X,closest_point.Y] && costs[POI.X,POI.Y] != int.MaxValue ){
                         closest_point = POI;
                     }
-                } catch (IndexOutOfRangeException e) { /* Ignore error_point */}
+                } catch (IndexOutOfRangeException e) {
+                    closest_point = POI;
+                }
             }
             return closest_point;
         
