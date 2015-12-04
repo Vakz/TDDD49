@@ -10,6 +10,7 @@ namespace Game.Model.Rules
     class RuleEngine
     {
         private Board _board;
+        public static const int MAX_ARRESTS = 4;
 
         public RuleEngine(Board board)
         {
@@ -111,6 +112,18 @@ namespace Game.Model.Rules
             if (p.TurnsOnCurrentPosition < 2) return true;
             if (_board[p.Position].Type == BlockType.TravelAgency) return false;
             return !nextToEscape(p.Position);
+        }
+
+        public void removePieceFromGame(Piece p)
+        {
+            p.Position = new Point(-1, -1);
+            p.Active = false;
+            p.Alive = false;
+        }
+
+        public void removePieceFromGame(Point pt)
+        {
+            removePieceFromGame(_board.getPieceAt(pt));
         }
 
         private bool nextToEscape(Point p)
