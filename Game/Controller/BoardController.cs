@@ -10,24 +10,27 @@ using Game.Model;
 
 namespace Game.Controller
 {
-    class GameController
+    class BoardController
     {
-        private Board board = BoardReader.readBoard("board.txt");
-        private List<Player> players = new List<Player>(); // Used to keep track of current player
+        public Board Board {get; private set;}
+        public List<Player> Players { get; private set; } // Used to keep track of current player
         private List<ThiefPlayer> thiefPlayers = new List<ThiefPlayer>();
         private PolicePlayer policePlayer;
         private int aliveThiefPlayers = 0;
+        public int CurrentPlayerDiceRoll { get; private set; }
         private RuleEngine ruleEngine;
         private LogicEngine logicEngine;
         public bool GameRunning { get; set; }
         public int CurrentPlayerIndex { get; private set; }
 
-        public GameController(int nrOfPlayers) {
+        public BoardController(int nrOfPlayers) {
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
+            Players = new List<Player>();
+            Board = BoardReader.readBoard("board.txt");
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
-            ruleEngine = new RuleEngine(board);
-            logicEngine = new LogicEngine(board);
+            ruleEngine = new RuleEngine(Board);
+            logicEngine = new LogicEngine(Board);
             GameRunning = true;
         }
 
@@ -41,9 +44,9 @@ namespace Game.Controller
             {
                 for (int i = 0; i < nrOfPlayers - 1; ++i)
                 {
-                    ThiefPlayer tp = new ThiefPlayer(board.getUnoccupiedByBlockType(BlockType.Hideout));
+                    ThiefPlayer tp = new ThiefPlayer(Board.getUnoccupiedByBlockType(BlockType.Hideout));
                     thiefPlayers.Add(tp);
-                    players.Add(tp);
+                    Players.Add(tp);
                     aliveThiefPlayers++;
                 }
                 // One more police pieces than thieves
@@ -63,11 +66,24 @@ namespace Game.Controller
             List<Point> spawnpoints = new List<Point>();
             for (int i = 0; i < nrOfPolice; ++i)
             {
-                spawnpoints.Add(board.getUnoccupiedByBlockType(BlockType.PoliceStation));
+                spawnpoints.Add(Board.getUnoccupiedByBlockType(BlockType.PoliceStation));
             }
             policePlayer = new PolicePlayer(spawnpoints);
-            players.Add(policePlayer);
+            Players.Add(policePlayer);
 
+        }
+
+        public bool move(Point src, Point dest)
+        {
+            try
+            {
+                Piece p = Board.getPieceAt(src);
+                return movePiece(p, dest);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -77,11 +93,11 @@ namespace Game.Controller
         /// <param name="pt">Destination</param>
         /// <returns>True if move was successful</returns>
         public bool movePiece(Piece p, Point pt) {
-            if (!players[CurrentPlayerIndex].allowedToMovePiece(p)) return false;
-            else if (!ruleEngine.canMoveTo(p, pt)) return false;
+            if (!Players[CurrentPlayerIndex].allowedToMovePiece(p)) return false;
+            else if (!ruleEngine.canMoveTo(p, pt, CurrentPlayerDiceRoll)) return false;
             else if (ruleEngine.canArrestAt(p, pt))
             {
-                Thief arrestTarget = (Thief)board.getPieceAt(pt);
+                Thief arrestTarget = (Thief)Board.getPieceAt(pt);
                 ruleEngine.arrest(arrestTarget, p);
                 if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
                 {
@@ -93,10 +109,26 @@ namespace Game.Controller
             {
                 if (movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
                 p.Position = pt;
+                if (p.Type == PieceType.Thief) attemptToRobPos((Thief)p, pt);
             }
             p.TurnsOnCurrentPosition++;
             endTurn();
             return true;
+        }
+
+        private void attemptToRobPos(Thief t, Point pt) {
+            if (logicEngine.isRobableBlock(Board[pt]))
+            {
+                if (Board[pt].Type == BlockType.Bank)
+                {
+                    ruleEngine.robBank(t, (Bank)Board[pt]);
+                }
+                else if (Board[pt].Type == BlockType.TravelAgency && ((TravelAgency)Board[pt]).Money > 0)
+                {
+                    ruleEngine.robBank(t, (TravelAgency)Board[pt]);
+                }
+                t.Arrestable = true;
+            }
         }
 
         /// <summary>
@@ -123,7 +155,7 @@ namespace Game.Controller
         /// <returns>True if move was made by train, else returns false</returns>
         private bool movedByTrain(Point origin, Point dest)
         {
-            return board[origin].Type == BlockType.TrainStop && board[dest].Type == BlockType.TrainStop;
+            return Board[origin].Type == BlockType.TrainStop && Board[dest].Type == BlockType.TrainStop;
         }
 
         /// <summary>
@@ -132,7 +164,7 @@ namespace Game.Controller
         public void endTurn()
         {
             // When police turn ends, check if any thief is attempting to escape
-            if (CurrentPlayerIndex == players.Count - 1)
+            if (CurrentPlayerIndex == Players.Count - 1)
             {
                 try
                 {
@@ -159,7 +191,7 @@ namespace Game.Controller
             }
         }
 
-        private void attemptEscapeJail()
+        public void attemptEscapeJail()
         {
             if (LogicEngine.diceRoll() == 6)
             {
@@ -170,7 +202,8 @@ namespace Game.Controller
 
         public void nextPlayer()
         {
-            CurrentPlayerIndex = (CurrentPlayerIndex+1) % players.Count;
+            CurrentPlayerIndex = (CurrentPlayerIndex+1) % Players.Count;
+            CurrentPlayerDiceRoll = LogicEngine.diceRoll();
         }
     }
 }

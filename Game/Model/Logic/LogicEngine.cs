@@ -36,5 +36,10 @@ namespace Game.Model.Logic
             return tp.Piece.Type == PieceType.Thief && tp.Piece.Alive && tp.Piece.Arrestable
                             && new[] { BlockType.EscapeAirport, BlockType.EscapeCheap }.Any(b => board[tp.Piece.Position].Type == b);
         }
+
+        public bool isRobableBlock(Block b)
+        {
+            return new[] { BlockType.Bank, BlockType.TravelAgency }.Any(s => s == b.Type);
+        }
     }
 }

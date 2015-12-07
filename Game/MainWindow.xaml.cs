@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Game.Model.DataStructures;
+using Game.Controller;
 
 namespace Game
 {
@@ -21,14 +22,16 @@ namespace Game
     /// </summary>
     public partial class MainWindow : Window
     {
+        GameController Game;
+
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame();
         }
 
-        private void InitializeGame() {
-            Board board = BoardReader.readBoard("board.txt");
+        private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
+        {
+            Game = new GameController(nrOfHumans, nrOfAI, AIPolice);
         }
     }
 }
