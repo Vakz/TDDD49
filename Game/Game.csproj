@@ -79,7 +79,10 @@
     <Compile Include="Model\DataStructures\Thief.cs" />
     <Compile Include="Model\Logic\LogicEngine.cs" />
     <Compile Include="Model\Logic\PathFinder.cs" />
+    <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\PolicePlayer.cs" />
     <Compile Include="Model\Rules\RuleEngine.cs" />
+    <Compile Include="Model\ThiefPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

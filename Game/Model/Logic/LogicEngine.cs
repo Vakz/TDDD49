@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
+using Game.Model;
 
 namespace Game.Model.Logic
 {
