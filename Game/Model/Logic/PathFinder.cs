@@ -15,7 +15,7 @@ namespace Game.Model.Logic
         private int         height;
         private Board       board;
 
-        PathFinder(Board board){
+        public PathFinder(Board board){
             this.board  = board;
             this.width  = board.Width;
             this.height = board.Height;

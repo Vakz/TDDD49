@@ -11,15 +11,17 @@ namespace Game.Model.Rules
     class RuleEngine
     {
         private Board _board;
+        private PathFinder pathfinder;
         public const int MAX_ARRESTS = 4;
         public const int MAX_TURNS_BY_TRAIN = 2;
 
         public RuleEngine(Board board)
         {
             _board = board;
+            pathfinder = new PathFinder(_board);
         }
 
-        public bool canMoveTo(Piece piece, Point dest)
+        public bool canMoveTo(Piece piece, Point dest, int cost = -1)
         {
             if (!LogicEngine.containedIn(dest, _board.Height, _board.Width)) return false;
             if (_board[dest].Type == BlockType.Blocked) return false;
@@ -32,11 +34,17 @@ namespace Game.Model.Rules
                 }
             }
             // TODO: More cases?
-            return canReach(piece, dest);
+            return canReach(piece, dest, cost);
         }
 
-        private bool canReach(Piece piece, Point dest) {
-            throw new NotImplementedException();
+        private bool canReach(Piece piece, Point dest, int cost) {
+            if ( cost == -1 ) {
+                return pathfinder.getShortestPath(piece, dest, canPass).Count != 0;
+            } else if (_board[dest].Type == BlockType.EscapeAirport) {
+                return pathfinder.getShortestPath(piece, dest, canPass).Count <= cost;
+            } else {
+                return pathfinder.getPathWithExactCost(piece, dest, cost, canPass).Count == cost;
+            }
         }
 
         public bool canPass(Point pt, Piece p)
