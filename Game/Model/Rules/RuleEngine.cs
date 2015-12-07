@@ -97,7 +97,7 @@ namespace Game.Model.Rules
         }
 
         private int calcArrestMoney(int money) {
-            return ((money - 1) / 500 + 1) * 1000;
+            return ((money - 1) / 5000 + 1) * 1000;
         }
 
         public bool allThievesArrested()
