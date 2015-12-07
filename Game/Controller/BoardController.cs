@@ -18,6 +18,7 @@ namespace Game.Controller
         private PolicePlayer policePlayer;
         private int aliveThiefPlayers = 0;
         private RuleEngine ruleEngine;
+        private LogicEngine logicEngine;
         public bool GameRunning { get; set; }
         public int CurrentPlayerIndex { get; private set; }
 
@@ -26,9 +27,14 @@ namespace Game.Controller
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
             ruleEngine = new RuleEngine(board);
+            logicEngine = new LogicEngine(board);
             GameRunning = true;
         }
 
+        /// <summary>
+        /// Adds new thief players to the game, at the first available hideout
+        /// </summary>
+        /// <param name="nrOfPlayers">The number of thief players to add</param>
         private void addThiefPlayers(int nrOfPlayers)
         {
             try
@@ -48,6 +54,10 @@ namespace Game.Controller
             }           
         }
 
+        /// <summary>
+        /// Adds new police pieces on first available point in the police station.
+        /// </summary>
+        /// <param name="nrOfPolice">The number of police pieces to be added</param>
         private void addPolicePlayer(int nrOfPolice)
         {
             List<Point> spawnpoints = new List<Point>();
@@ -85,31 +95,81 @@ namespace Game.Controller
                 p.Position = pt;
             }
             p.TurnsOnCurrentPosition++;
+            endTurn();
             return true;
         }
 
+        /// <summary>
+        /// Skips turn, if allowed
+        /// </summary>
+        /// <param name="p">Piece requesting skip</param>
+        /// <returns>True if skip was allowed and turn ended</returns>
         public bool skipTurn(Piece p)
         {
-            return ruleEngine.isAllowedToSkipTurn(p);
+            if (ruleEngine.isAllowedToSkipTurn(p))
+            {
+                p.TurnsOnCurrentPosition++;
+                endTurn();
+                return true;
+            }
+            return false;
         }
 
+        /// <summary>
+        /// Checks if the move from origin to dest was made by train
+        /// </summary>
+        /// <param name="origin">Point the piece originated from</param>
+        /// <param name="dest">Point the piece moved to</param>
+        /// <returns>True if move was made by train, else returns false</returns>
         private bool movedByTrain(Point origin, Point dest)
         {
             return board[origin].Type == BlockType.TrainStop && board[dest].Type == BlockType.TrainStop;
         }
 
+        /// <summary>
+        /// Makes all checks that should be made at the end of turn and moves the game to the next player
+        /// </summary>
         public void endTurn()
         {
+            // When police turn ends, check if any thief is attempting to escape
+            if (CurrentPlayerIndex == players.Count - 1)
+            {
+                try
+                {
+                    ruleEngine.removePieceFromGame(thiefPlayers.First((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).Piece);
+                }
+                catch (Exception)
+                {
+                    // No thief matching
+                }
+            }
+            // At end of thief turn, check if arrested and potentially release
+            else {
+                decrementArrestTime(thiefPlayers[CurrentPlayerIndex].Piece);
+            }
             nextPlayer();
             // If all thieves arrested or no thief pieces on the board, end the game
             GameRunning = thiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
         }
 
-        
+        private void decrementArrestTime(Thief t) {
+            if (t.ArrestTurns > 0) {
+                t.ArrestTurns--;
+                if (t.ArrestTurns == 0) ruleEngine.release(t);
+            }
+        }
+
+        private void attemptEscapeJail()
+        {
+            if (LogicEngine.diceRoll() == 6)
+            {
+                ruleEngine.release(thiefPlayers[CurrentPlayerIndex].Piece);
+                thiefPlayers[CurrentPlayerIndex].Piece.Arrestable = true;
+            }
+        }
 
         public void nextPlayer()
         {
-            // TODO: Check if thief is standing on escape, is arrestable, and should be removed from the game
             CurrentPlayerIndex = (CurrentPlayerIndex+1) % players.Count;
         }
     }

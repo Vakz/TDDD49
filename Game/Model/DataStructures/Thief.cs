@@ -12,7 +12,7 @@ namespace Game.Model.DataStructures
 
         public bool Arrestable { get; set; }
         public int ArrestTurns { get; set; }
-        public int ArrestCount { get; private set; }
+        public int ArrestCount { get; set; }
 
         public Thief(Point p) : base(p)
         {

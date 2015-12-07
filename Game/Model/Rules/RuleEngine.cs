@@ -78,12 +78,25 @@ namespace Game.Model.Rules
             t.Arrestable = true;
         }
 
+        /// <summary>
+        /// Checks if it
+        /// </summary>
+        /// <param name="t"></param>
+        public void release(Thief t)
+        {
+            t.Arrestable = false;
+            t.Active = true;
+            // Find a police to activate, as guarding is done
+            _board.Pieces.First(s => s.Alive && !s.Active).Active = true;
+        }
+
         public int arrest(Thief t, Piece p)
         {
             if (!(p.Type == PieceType.Police)) throw new ArgumentException("Arresting piece must be of type Police");
             int money = t.arrest(Logic.LogicEngine.diceRoll());
             t.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
             p.Position = _board.getUnoccupiedByBlockType(BlockType.PoliceStation);
+            p.Active = false;
             // Police gets 1000 for every started 5000
             return calcArrestMoney(money);
         }
@@ -117,7 +130,7 @@ namespace Game.Model.Rules
         }
 
         public bool isAllowedToSkipTurn(Piece p) {
-            if (p.Type == PieceType.Thief) return false;
+            if (p.Type == PieceType.Thief) return ((Thief)p).ArrestCount > 0;
             if (p.TurnsOnCurrentPosition < 2) return true;
             if (_board[p.Position].Type == BlockType.TravelAgency) return false;
             return !nextToEscape(p.Position);
