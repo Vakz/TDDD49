@@ -58,15 +58,16 @@ namespace Game.Model.Logic
         public Point getClosestPointOfInterest(Piece p, List<Point> POIs, canPassCheck canPass){
             resetCosts();
             updateCosts(p, p.Position, canPass);
-            //TODO: fix this mess of finding closest POI
+
             Point closest_point = Point.error();
+            int   closest_cost  = int.MaxValue;
+
             foreach ( Point POI in POIs ){
-                try {
-                    if (costs[POI.X,POI.Y] < costs[closest_point.X,closest_point.Y] && costs[POI.X,POI.Y] != int.MaxValue ){
-                        closest_point = POI;
-                    }
-                } catch (IndexOutOfRangeException e) {
+                int POI_cost = costs[POI.X, POI.Y];
+
+                if ( POI_cost < closest_cost ){
                     closest_point = POI;
+                    closest_cost  = POI_cost;
                 }
             }
             return closest_point;
@@ -77,14 +78,15 @@ namespace Game.Model.Logic
             resetCosts();
             updateCosts(p, goal, canPass);
 
-            Point[] neighbour_offset = new Point[] {
+            Point[] neighbour_offset = new Point[]
+            {
                 new Point( 1, 0 ), new Point( 0, 1 ),
                 new Point(-1, 0 ), new Point( 0,-1 ),
             };
 
             foreach ( Point pt in neighbour_offset ){
                 Point pos = p.Position+pt;
-                if (costs[pos.X, pos.Y] == exact_cost - 1) {
+                if ( costs[pos.X, pos.Y] == exact_cost-1 ){
                     // blockera rutan vi stod på:
                     costs[p.Position.X, p.Position.Y] = int.MaxValue;   // istället för detta kan man alternativt använda en ändrad callbackfuktion
                     // hitta kortaste väg från den nya punkten:

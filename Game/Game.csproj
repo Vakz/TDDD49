@@ -61,7 +61,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controller\BoardController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -80,10 +79,7 @@
     <Compile Include="Model\DataStructures\Thief.cs" />
     <Compile Include="Model\Logic\LogicEngine.cs" />
     <Compile Include="Model\Logic\PathFinder.cs" />
-    <Compile Include="Model\Player.cs" />
-    <Compile Include="Model\PolicePlayer.cs" />
     <Compile Include="Model\Rules\RuleEngine.cs" />
-    <Compile Include="Model\ThiefPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
