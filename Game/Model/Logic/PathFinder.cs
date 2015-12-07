@@ -15,15 +15,14 @@ namespace Game.Model.Logic
         private int         height;
         private Board       board;
 
-        PathFinder(Board board) {
+        PathFinder(Board board){
             this.board  = board;
             this.width  = board.Width;
             this.height = board.Height;
-
-            costs = new int[board.Width, board.Height];
+            this.costs = new int[board.Width, board.Height];
         }
 
-        private void resetCosts() {
+        private void resetCosts(){
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     costs[x, y] = int.MaxValue;
@@ -40,11 +39,12 @@ namespace Game.Model.Logic
 
             if ( !canPass( pos, p ) ) return;
 
-            if (cost < costs[pos.X, pos.Y]) { 
+            if (cost < costs[pos.X, pos.Y]){ 
                 //sätt kostnad:
                 costs[pos.X, pos.Y] = cost;
                 //kolla grannar:
-                Point[] neighbours = new Point[] {
+                Point[] neighbours = new Point[]
+                {
                     pos + new Point( 1, 0 ), pos + new Point( 0, 1 ),
                     pos + new Point(-1, 0 ), pos + new Point( 0,-1 ),
                 };
@@ -91,7 +91,7 @@ namespace Game.Model.Logic
                     costs[p.Position.X, p.Position.Y] = int.MaxValue;   // istället för detta kan man alternativt använda en ändrad callbackfuktion
                     // hitta kortaste väg från den nya punkten:
                     path = getShortestPath(p, goal, canPass, false);
-                    if (path.Count != 0) {
+                    if (path.Count != 0){
                         path.Insert(0, pos);
                     }
                     return path;
@@ -114,7 +114,8 @@ namespace Game.Model.Logic
                 updateCosts(p, goal, canPass);
             }
 
-            Point[] neighbour_offsets = new Point[] {
+            Point[] neighbour_offsets = new Point[]
+            {
                 new Point( 1, 0 ), new Point( 0, 1 ),
                 new Point(-1, 0 ), new Point( 0,-1 ),
             };
@@ -122,7 +123,7 @@ namespace Game.Model.Logic
             /* om det inte fungerar helt så kolla *
              * gärna om i ska börja på 1 eller 0  */
             Point min_pos = p.Position;
-            do{
+            do {
                 Point last_point = min_pos;
                 foreach ( Point neighbour_offset in neighbour_offsets ){
                     Point neighbour = min_pos + neighbour_offset;
@@ -131,8 +132,7 @@ namespace Game.Model.Logic
                     }
                 }
                 // ifall koden inte kan hitta vägen ger vi endast en tom väg
-                if (min_pos == last_point)
-                {
+                if (min_pos == last_point){
                     return new List<Point>();
                 } else {
                     path.Add(min_pos);
