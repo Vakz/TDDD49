@@ -101,8 +101,11 @@ namespace Game.Model.Logic
             return new List<Point>();
         }
 
+        public List<Point> getShortestPath(Piece p, Point goal, canPassCheck canPass){
+            return getShortestPath(p, goal, canPass, true);
+        }
 
-        public List<Point> getShortestPath( Piece p, Point goal, canPassCheck canPass, bool recalcPaths=true ){
+        private List<Point> getShortestPath( Piece p, Point goal, canPassCheck canPass, bool recalcPaths ){
             List<Point> path = new List<Point>();
 
             if (costs[p.Position.X, p.Position.Y] == int.MaxValue) return path;
