@@ -10,6 +10,6 @@
                 <MenuItem Header="_Close"></MenuItem>
             </MenuItem>
         </Menu>
-        <UniformGrid Name="BoardGrid" DockPanel.Dock="Left" Width="Auto" Height="Auto" Rows="32" Columns="22"></UniformGrid>
+        <Canvas x:Name="BoardCanvas" Width="Auto" DockPanel.Dock="Top" />
     </DockPanel>
 </Window>

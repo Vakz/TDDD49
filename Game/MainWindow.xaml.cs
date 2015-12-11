@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Game.Model.DataStructures;
 using Game.Controller;
+using Game.UI;
 
 namespace Game
 {
@@ -27,6 +28,12 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
+
+            Image trump = ImageLoader.loadBlock(BlockType.Bank);
+
+            BoardCanvas.Children.Add(trump);
+            Canvas.SetLeft(trump, 50);
+            Canvas.SetTop(trump, 100);
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
