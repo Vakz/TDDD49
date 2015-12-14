@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Users\Public\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -115,9 +115,25 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\trumpman.jpg" />
+    <Resource Include="Resources\blocked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trumpman.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\path.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\police.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\special.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\thief.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

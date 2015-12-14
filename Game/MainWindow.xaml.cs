@@ -28,18 +28,7 @@ namespace Game
         {
             InitializeComponent();
 
-            Image trump = ImageLoader.loadBlock(BlockType.Bank);
-
-            BoardCanvas.Children.Add(trump);
-            GameCanvas.SetLeft(trump, 0);
-            GameCanvas.SetTop(trump, 0);
-
-            Image t = ImageLoader.loadBlock(BlockType.Bank);
-
-            BoardCanvas.Children.Add(t);
-            GameCanvas.SetLeft(t, 300);
-            GameCanvas.SetTop(t, 400);
-            InitializeGame(1, 1, true);
+            //InitializeGame(1, 1, true);
         }
 
 

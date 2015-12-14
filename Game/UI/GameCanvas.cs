@@ -7,29 +7,40 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
 
 
 namespace Game.UI
 {
     class GameCanvas : Canvas
     {
+        enum BlockTypes{
+            
+        }
 
+        Dictionary<BlockType,ImageSource> bitmaps;
+
+        public GameCanvas()
+        {
+
+
+        }
+
+
+        public void updateCanvasData(){ }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
         {
  	        base.OnRender(dc);
             
-            Image trumpie = new Image();
-            trumpie.Source = new BitmapImage(new Uri(@"pack://application:,,,/Resources/trumpman.png"));
+            //@"pack://application:,,,/Resources/trumpman.png"
+            ImageSource trumpie = new BitmapImage( new Uri( Directory.GetCurrentDirectory()+"\\Resources\\trumpman.jpg") );
 
+            
 
-
-
-            //BitmapImage img = new BitmapImage (new Uri ("c:\\demo.jpg"));
-            dc.DrawImage (trumpie.Source, new Rect (0, 0, 50, 50));
+            dc.DrawImage(trumpie, new Rect (0, 0, 50, 50));
             
         }
-
 
         private int _tileSize = 50;
         public int TileSize{
@@ -43,33 +54,3 @@ namespace Game.UI
         }
     }
 }
-
-
-/*
-        public void drawImage( Point pos, Image img ){
-
-            Image trump = img;
-
-            BoardCanvas.Children.Add(trump);
-            Canvas.SetLeft(img, 0);
-            Canvas.SetTop(trump, 0);
-
-            Image t = ImageLoader.loadBlock(BlockType.Bank);
-
-            BoardCanvas.Children.Add(t);
-            Canvas.SetLeft(t, new Point(_tileSize*pos.x, _tileSize*pos.y));
-            Canvas.SetTop(t, 400);
-
-
-
-
-
-
-
-
-
-
-        }
-
-
-*/
