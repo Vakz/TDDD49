@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Game.Model.DataStructures;
 using Game.Controller;
 using Game.UI;
 
@@ -24,6 +23,8 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController Game;
+        Point Selected { get; set; }
+        int BlockSize { get; set; }
 
         public MainWindow()
         {
@@ -38,20 +39,35 @@ namespace Game
             Image t = ImageLoader.loadBlock(BlockType.Bank);
 
             BoardCanvas.Children.Add(t);
-            Canvas.SetLeft(t, 300);
+            Canvas.SetLeft(t, 50);
             Canvas.SetTop(t, 400);
             InitializeGame(1, 1, true);
+            
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
         {
             Game = new GameController(nrOfHumans, nrOfAI, AIPolice);
+            
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
         }
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
-            System.Console.WriteLine("test");
+            Point clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas));
+
+            if (Selected == null)
+            {
+            }
+           
+        }
+
+        public Point pixelCoordsToBlockCoords(Point p) {
+            int blockSize = (int)BoardCanvas.ActualHeight / Game.Height;
+            return new Point(
+                (int)p.X / blockSize,
+                (int)p.Y / blockSize
+            );
         }
     }
 }

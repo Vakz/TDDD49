@@ -70,8 +70,9 @@ namespace Game.Controller
             }
             policePlayer = new PolicePlayer(spawnpoints);
             Players.Add(policePlayer);
-
         }
+
+        
 
         public bool move(Point src, Point dest)
         {
