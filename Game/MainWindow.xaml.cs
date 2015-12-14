@@ -30,19 +30,7 @@ namespace Game
         {
             InitializeComponent();
 
-            Image trump = ImageLoader.loadBlock(BlockType.Bank);
-
-            BoardCanvas.Children.Add(trump);
-            Canvas.SetLeft(trump, 0);
-            Canvas.SetTop(trump, 0);
-
-            Image t = ImageLoader.loadBlock(BlockType.Bank);
-
-            BoardCanvas.Children.Add(t);
-            Canvas.SetLeft(t, 50);
-            Canvas.SetTop(t, 400);
             InitializeGame(1, 1, true);
-            
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
@@ -56,8 +44,9 @@ namespace Game
         {
             Point clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas));
 
-            if (Selected == null)
+            if (Selected == null && Game.pieceExistsAt((int)clicked.X, (int)clicked.Y))
             {
+                Selected = clicked;
             }
            
         }

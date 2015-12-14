@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Users\Public\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -60,6 +60,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\ExtensionMethods.cs" />
+    <Compile Include="UI\GameCanvas.cs" />
     <Compile Include="UI\ImageLoader.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -118,7 +119,24 @@
     <None Include="Resources\blocked.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\trumpman.jpg" />
+    <Resource Include="Resources\blocked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trumpman.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\path.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\police.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\special.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\thief.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\path.png" />
