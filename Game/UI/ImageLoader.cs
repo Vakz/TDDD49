@@ -16,7 +16,6 @@ namespace Game.UI
     {
         private static Dictionary<BlockType, ImageSource> imageSources = new Dictionary<BlockType, ImageSource>() { };
         private static Dictionary<BlockType, Bitmap> availableBitmaps = new Dictionary<BlockType, Bitmap>() {
-            { BlockType.Bank, Properties.Resources.trumpman }
         };
 
         public static System.Windows.Controls.Image loadBlock(BlockType bt)
@@ -35,5 +34,20 @@ namespace Game.UI
             }
             return imageSources[bt];
         }
+    }
+
+    enum AvailableTextures
+    {
+        Bank,
+        Blocked,
+        Normal,
+        Hideout,
+        Telegraph,
+        Airport,
+        Train,
+        PoliceStation,
+        TrainStop,
+        Thief,
+        Police
     }
 }

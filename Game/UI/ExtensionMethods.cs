@@ -17,7 +17,7 @@ namespace Game.UI
                    b.GetHbitmap(),
                    IntPtr.Zero,
                    System.Windows.Int32Rect.Empty,
-                   BitmapSizeOptions.FromWidthAndHeight(b.Width, b.Height));
+                   BitmapSizeOptions.FromWidthAndHeight(50, 50));
         }
     }
 }

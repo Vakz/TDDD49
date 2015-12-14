@@ -32,13 +32,26 @@ namespace Game
             Image trump = ImageLoader.loadBlock(BlockType.Bank);
 
             BoardCanvas.Children.Add(trump);
-            Canvas.SetLeft(trump, 50);
-            Canvas.SetTop(trump, 100);
+            Canvas.SetLeft(trump, 0);
+            Canvas.SetTop(trump, 0);
+
+            Image t = ImageLoader.loadBlock(BlockType.Bank);
+
+            BoardCanvas.Children.Add(t);
+            Canvas.SetLeft(t, 300);
+            Canvas.SetTop(t, 400);
+            InitializeGame(1, 1, true);
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
         {
             Game = new GameController(nrOfHumans, nrOfAI, AIPolice);
+            BoardCanvas.MouseLeftButtonDown += CanvasClick;
+        }
+
+        private void CanvasClick(object sender, MouseButtonEventArgs e)
+        {
+            System.Console.WriteLine("test");
         }
     }
 }
