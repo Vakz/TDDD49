@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
+using System.Collections.ObjectModel;
 
 namespace Game.Model
 {
@@ -34,6 +35,11 @@ namespace Game.Model
         public override bool allowedToMovePiece(Piece p)
         {
             return p.Type == PieceType.Police && p.Active;
+        }
+
+        public override List<Piece> getControlledPieces()
+        {
+            return _pieces;
         }
     }
 }

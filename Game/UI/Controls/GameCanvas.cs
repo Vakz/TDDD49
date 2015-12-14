@@ -92,10 +92,6 @@ namespace Game.UI.Controls
             
             dc.DrawImage( trumpie, new Rect(0, 0, _tileSize, _tileSize ) );
 
-
-
-
-
             // draw blocks:
             foreach ( GamePoint p in BoardBlocks.Keys ){
                 BlockType bt = BoardBlocks[p];

@@ -25,8 +25,6 @@ namespace Game.Model.DataStructures
             }
         }
 
-
-
         public Block this[int x, int y]
         {
             get
@@ -46,7 +44,7 @@ namespace Game.Model.DataStructures
 
         public void addPiece(PieceType pt) {
             List<Point> spawnPoints = SpecialBlocks[pt == PieceType.Police ? BlockType.PoliceStation : BlockType.Hideout];
-            Point p = spawnPoints.First(s => !isOccupied(s));
+            Point p = spawnPoints.FirstOrDefault(s => !isOccupied(s));
             if (p == null) throw new ArgumentException("No available block to add piece");
             _pieces.Add(pt == PieceType.Thief ? new Thief(p) : new Piece(p));
         }
@@ -77,14 +75,7 @@ namespace Game.Model.DataStructures
         }
 
         public Piece getPieceAt(Point p) {
-            try
-            {
-                return _pieces.First(s => s.Position == p);
-            }
-            catch(Exception) {
-                return null;
-            }
-            
+            return _pieces.FirstOrDefault(s => s.Position == p);
         }
 
         public int Height
@@ -105,7 +96,7 @@ namespace Game.Model.DataStructures
 
         public Point getUnoccupiedByBlockType(BlockType type)
         {
-            return SpecialBlocks[type].First(b => !isOccupied(b));
+            return SpecialBlocks[type].FirstOrDefault(b => !isOccupied(b));
         }
 
         public bool isEscape(Point p)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
+using System.Collections.ObjectModel;
 
 namespace Game.Model
 {
@@ -32,6 +33,8 @@ namespace Game.Model
         /// <param name="p">The piece to be moved</param>
         /// <returns>True if player is allowed to move p</returns>
         public abstract bool allowedToMovePiece(Piece p);
+
+        public abstract List<Piece> getControlledPieces();
     }
 
 

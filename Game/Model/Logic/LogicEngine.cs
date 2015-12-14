@@ -24,7 +24,7 @@ namespace Game.Model.Logic
 
         public static bool containedIn(Game.Model.DataStructures.Point p, int height, int width)
         {
-            return (p.X >= 0 && p.Y >= 0 && p.X < width && p.Y < height);
+            return p  != Game.Model.DataStructures.Point.Error && (p.X >= 0 && p.Y >= 0 && p.X < width && p.Y < height);
         }
 
         public static bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t, PathFinder.canPassCheck pred)

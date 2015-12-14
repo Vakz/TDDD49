@@ -30,15 +30,15 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem>
-                <dc:TextBlockWithTitle Label="Money" x:Name="Money" Data="1000"></dc:TextBlockWithTitle>
+                <dc:TextBlockWithTitle Label="Money" x:Name="Money" Data="0"></dc:TextBlockWithTitle>
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
-                <TextBlock Name="Wanted" Text="Wanted!"></TextBlock>
+                <TextBlock Name="Wanted" Text="Wanted!" Visibility="Hidden"></TextBlock>
             </StatusBarItem>
             <Separator Grid.Column="3" />
             <StatusBarItem Grid.Column="4">
-                <TextBlock Text="Placeholder" />
+                <dc:TextBlockWithTitle x:Name="Error" Visibility="Hidden" />
             </StatusBarItem>
         </StatusBar>
     </DockPanel>

@@ -32,35 +32,49 @@ namespace Game
         {
             InitializeComponent();
             InitializeGame(1, 1, true);
+            //System.Console.WriteLine(Game.getAllPieces());
+            Selected = BoardPoint.Error;
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
         {
-            Game = new GameController(nrOfHumans, nrOfAI, AIPolice);
+            Game = new GameController(nrOfHumans, AIPolice);
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
         }
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
-            var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
+            
+            //var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
+            var clicked = new BoardPoint(1, 1);
 
+            System.Console.WriteLine("Enter click-function");
             // No currently selected tile
+            
             if (Selected == BoardPoint.Error)
             {
+                System.Console.WriteLine("No piece!");
                 Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             }
             // Clicked same tile, deselect
             else if (Selected == clicked)
             {
+                System.Console.WriteLine("Deselected");
                 Selected = BoardPoint.Error;
             }
             // Selected exists, new tile selected. Attempt to move, and if successful, deselect
             else if (Selected != BoardPoint.Error)
             {
-                if (Game.move(Selected, clicked))
+                System.Console.WriteLine("Attempting to move");
+                try
                 {
-                    Selected = BoardPoint.Error;
+                    if (Game.move(Selected, clicked)) Selected = BoardPoint.Error;
                 }
+                catch(Game.Exceptions.IllegalMoveException ime)
+                {
+                    Error.Text = ime.Message;
+                }
+               
             }
         }
 

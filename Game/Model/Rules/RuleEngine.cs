@@ -56,7 +56,7 @@ namespace Game.Model.Rules
         public bool canArrestAt(Piece p, Point pt)
         {
             if (p.Type != PieceType.Police) return false;
-            if (_board.getPieceAt(pt).Type != PieceType.Thief) return false;
+            if (_board.getPieceAt(pt)?.Type != PieceType.Thief) return false;
             Piece arrestTarget = _board.getPieceAt(pt);
             if (arrestTarget == null) return false;
             return (((Thief)arrestTarget).Arrestable);

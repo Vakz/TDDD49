@@ -30,5 +30,10 @@ namespace Game.Model
         {
             return Active && p.Position == Piece.Position;
         }
+
+        public override List<Piece> getControlledPieces()
+        {
+            return new List<Piece>() { Piece };
+        }
     }
 }

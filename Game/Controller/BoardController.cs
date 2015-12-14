@@ -8,6 +8,7 @@ using Game.Model.Logic;
 using Game.Model.Rules;
 using Game.Model;
 using System.IO;
+using Game.Exceptions;
 
 namespace Game.Controller
 {
@@ -95,8 +96,8 @@ namespace Game.Controller
         /// <param name="pt">Destination</param>
         /// <returns>True if move was successful</returns>
         public bool movePiece(Piece p, Point pt) {
-            if (!Players[CurrentPlayerIndex].allowedToMovePiece(p)) return false;
-            else if (!ruleEngine.canMoveTo(p, pt, CurrentPlayerDiceRoll)) return false;
+            if (!Players[CurrentPlayerIndex].allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
+            else if (!ruleEngine.canMoveTo(p, pt, CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
             else if (ruleEngine.canArrestAt(p, pt))
             {
                 Thief arrestTarget = (Thief)Board.getPieceAt(pt);
@@ -104,7 +105,7 @@ namespace Game.Controller
                 if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
                 {
                     ruleEngine.removePieceFromGame(p);
-                    ruleEngine.removePieceFromGame(arrestTarget);  
+                    ruleEngine.removePieceFromGame(arrestTarget);
                 }
             }
             else
@@ -166,15 +167,13 @@ namespace Game.Controller
         public void endTurn()
         {
             // When police turn ends, check if any thief is attempting to escape
-            if (CurrentPlayerIndex == Players.Count - 1)
+            // All players have at least one piece, so using index 0 is safe.
+            if (Players[CurrentPlayerIndex].getControlledPieces()[0].Type == PieceType.Police)
             {
-                try
+                List<ThiefPlayer> escaping = thiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
+                foreach(ThiefPlayer tp in escaping)
                 {
-                    ruleEngine.removePieceFromGame(thiefPlayers.First((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).Piece);
-                }
-                catch (Exception)
-                {
-                    // No thief matching
+                    ruleEngine.removePieceFromGame(tp.Piece);
                 }
             }
             // At end of thief turn, check if arrested and potentially release
