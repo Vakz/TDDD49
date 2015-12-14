@@ -116,42 +116,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\blocked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\blocked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trumpman.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\path.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\police.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\special.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\thief.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\path.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\police.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\thief.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\special.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\special.png" />
+    <Resource Include="Resources\blocked.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\board.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\path.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\police.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\special.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\thief.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\trumpman.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

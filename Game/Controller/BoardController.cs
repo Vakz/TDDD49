@@ -7,6 +7,7 @@ using Game.Model.DataStructures;
 using Game.Model.Logic;
 using Game.Model.Rules;
 using Game.Model;
+using System.IO;
 
 namespace Game.Controller
 {
@@ -26,7 +27,7 @@ namespace Game.Controller
         public BoardController(int nrOfPlayers) {
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
             Players = new List<Player>();
-            Board = BoardReader.readBoard("board.txt");
+            Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
             ruleEngine = new RuleEngine(Board);
