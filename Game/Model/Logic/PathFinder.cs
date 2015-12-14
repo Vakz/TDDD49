@@ -59,7 +59,7 @@ namespace Game.Model.Logic
             resetCosts();
             updateCosts(p, p.Position, canPass);
 
-            Point closest_point = Point.error();
+            Point closest_point = Point.Error;
             int   closest_cost  = int.MaxValue;
 
             foreach ( Point POI in POIs ){

@@ -13,13 +13,17 @@ namespace Game.Model.DataStructures
             X = x;
             Y = y;
         }
+
+        public static Point Error
+        {
+            get
+            {
+                return new Point(int.MinValue, int.MinValue);
+            }
+        }
+
         public int X { get; set; }
         public int Y { get; set; }
-
-        public static Point error()
-        {
-            return new Point(int.MinValue, int.MinValue);
-        }
     
 
         public static bool operator ==(Point a, Point b) 

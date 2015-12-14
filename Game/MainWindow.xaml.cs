@@ -14,16 +14,18 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Game.Controller;
 using Game.UI;
+using BoardPoint = Game.Model.DataStructures.Point;
 
 namespace Game
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         GameController Game;
-        Point Selected { get; set; }
+        BoardPoint Selected { get; set; }
         int BlockSize { get; set; }
 
         public MainWindow()
@@ -42,16 +44,20 @@ namespace Game
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
-            Point clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas));
+            var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas)).toGamePoint();
 
-            if (Selected == null && Game.pieceExistsAt((int)clicked.X, (int)clicked.Y))
+            if (Selected == null)
             {
-                Selected = clicked;
+                Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
+            }
+            else if (Selected != null)
+            {
+
             }
            
         }
 
-        public Point pixelCoordsToBlockCoords(Point p) {
+        private Point pixelCoordsToBlockCoords(System.Windows.Point p) {
             int blockSize = (int)BoardCanvas.ActualHeight / Game.Height;
             return new Point(
                 (int)p.X / blockSize,

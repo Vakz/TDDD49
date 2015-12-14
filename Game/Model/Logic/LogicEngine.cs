@@ -29,7 +29,7 @@ namespace Game.Model.Logic
 
         public static bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t, PathFinder.canPassCheck pred)
         {
-            return pf.getClosestPointOfInterest(t, hideouts, pred) == Point.error();
+            return pf.getClosestPointOfInterest(t, hideouts, pred) == Point.Error;
         }
 
         public bool escapingThiefPred(ThiefPlayer tp) {

@@ -19,5 +19,9 @@ namespace Game.UI
                    System.Windows.Int32Rect.Empty,
                    BitmapSizeOptions.FromWidthAndHeight(50, 50));
         }
+
+        public static Game.Model.DataStructures.Point toGamePoint(this System.Windows.Point pt) {
+            return new Game.Model.DataStructures.Point((int)pt.X, (int)pt.Y);
+        }
     }
 }

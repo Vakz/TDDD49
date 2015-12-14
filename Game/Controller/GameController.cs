@@ -43,9 +43,9 @@ namespace Game.Controller
             Game = new BoardController(nrOfHumans + nrOfAI);
         }
 
-        public bool pieceExistsAt(int x, int y)
+        public bool pieceExistsAt(Point pt)
         {
-            return Game.Board.getPieceAt(new Point(x, y)) != null;
+            return Game.Board.getPieceAt(pt) != null;
         }
     }
 }

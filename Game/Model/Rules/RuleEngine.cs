@@ -146,7 +146,7 @@ namespace Game.Model.Rules
 
         public void removePieceFromGame(Piece p)
         {
-            p.Position = Point.error();
+            p.Position = Point.Error;
             p.Active = false;
             p.Alive = false;
         }
