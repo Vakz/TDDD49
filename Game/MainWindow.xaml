@@ -1,9 +1,10 @@
 ﻿<!-- H:3 for menu -->
 <!-- W:31 H:23 -->
 <Window x:Class="Game.MainWindow"
+        SizeToContent="WidthAndHeight"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dc="clr-namespace:Game.UI"
+        xmlns:dc="clr-namespace:Game.UI.Controls"
         Title="MainWindow" Height="Auto" Width="Auto">
     <DockPanel Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
         <Menu x:Name="Menu" DockPanel.Dock="Top">
@@ -13,6 +14,32 @@
                 <MenuItem Header="_Close"></MenuItem>
             </MenuItem>
         </Menu>
-        <dc:GameCanvas x:Name="BoardCanvas" Width="1550" Height="1150" DockPanel.Dock="Top" />
+        <dc:GameCanvas x:Name="BoardCanvas" Width="1550" Background="Aqua" Height="750" DockPanel.Dock="Top" />
+        <StatusBar DockPanel.Dock="Bottom" Height="31" Width="Auto">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <dc:TextBlockWithTitle Label="Money" x:Name="Money" Data="1000"></dc:TextBlockWithTitle>
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+                <TextBlock Name="Wanted" Text="Wanted!"></TextBlock>
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+                <TextBlock Text="Placeholder" />
+            </StatusBarItem>
+        </StatusBar>
     </DockPanel>
 </Window>

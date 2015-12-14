@@ -47,5 +47,10 @@ namespace Game.Controller
         {
             return Game.Board.getPieceAt(pt) != null;
         }
+
+        public bool move(Point src, Point dest)
+        {
+            return Game.move(src, dest);
+        }
     }
 }

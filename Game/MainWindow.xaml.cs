@@ -31,37 +31,44 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
-
             InitializeGame(1, 1, true);
         }
 
         private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
         {
             Game = new GameController(nrOfHumans, nrOfAI, AIPolice);
-            
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
         }
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
-            var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas)).toGamePoint();
+            var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
 
-            if (Selected == null)
+            // No currently selected tile
+            if (Selected == BoardPoint.Error)
             {
                 Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             }
-            else if (Selected != null)
+            // Clicked same tile, deselect
+            else if (Selected == clicked)
             {
-
+                Selected = BoardPoint.Error;
             }
-           
+            // Selected exists, new tile selected. Attempt to move, and if successful, deselect
+            else if (Selected != BoardPoint.Error)
+            {
+                if (Game.move(Selected, clicked))
+                {
+                    Selected = BoardPoint.Error;
+                }
+            }
         }
 
-        private Point pixelCoordsToBlockCoords(System.Windows.Point p) {
+        private BoardPoint pixelCoordsToBlockCoords(BoardPoint p) {
             int blockSize = (int)BoardCanvas.ActualHeight / Game.Height;
-            return new Point(
-                (int)p.X / blockSize,
-                (int)p.Y / blockSize
+            return new BoardPoint(
+                p.X / blockSize,
+                p.Y / blockSize
             );
         }
     }

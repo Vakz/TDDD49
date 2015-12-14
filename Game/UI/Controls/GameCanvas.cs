@@ -10,7 +10,7 @@ using System.Windows;
 using System.IO;
 using GamePoint = Game.Model.DataStructures.Point;
 
-namespace Game.UI
+namespace Game.UI.Controls
 {
     class GameCanvas : Canvas
     {
