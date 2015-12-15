@@ -25,7 +25,19 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController Game;
-        BoardPoint Selected { get; set; }
+        BoardPoint _selected = BoardPoint.Error;
+        BoardPoint Selected
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                _selected = value;
+                BoardCanvas.BoardSelection = value;
+            }
+        }
 
         public MainWindow()
         {
