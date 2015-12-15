@@ -80,7 +80,28 @@ namespace Game.Controller
             Board.addPiece(policePlayer.getControlledPieces());
         }
 
-        
+        public int EscapedThiefMoney {
+            get
+            {
+                int sum = 0;
+                foreach (ThiefPlayer t in thiefPlayers)
+                {
+                    if (!t.Piece.Alive)
+                    {
+                        sum += t.Piece.Money;
+                    }
+                }
+                return sum;
+            }            
+        }
+
+        public int PoliceMoney
+        {
+            get
+            {
+                return policePlayer.Money;
+            }
+        }
 
         public bool move(Point src, Point dest)
         {
@@ -95,6 +116,7 @@ namespace Game.Controller
         /// <param name="pt">Destination</param>
         /// <returns>True if move was successful</returns>
         public bool movePiece(Piece p, Point pt) {
+            if (!GameRunning) throw new ApplicationException("Game is not running!");
             if (!Players[CurrentPlayerIndex].allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
             else if (!ruleEngine.canMoveTo(p, pt, CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
             else if (ruleEngine.canArrestAt(p, pt))
@@ -140,6 +162,7 @@ namespace Game.Controller
         /// <returns>True if skip was allowed and turn ended</returns>
         public void skipTurn()
         {
+            if (!GameRunning) throw new ApplicationException("Game is not running!");
             Player p = Players[CurrentPlayerIndex];
             System.Console.WriteLine(p.getControlledPieces()[0].Type);
             if (!p.getControlledPieces().TrueForAll(ruleEngine.isAllowedToSkipTurn)) throw new IllegalMoveException("Player is not allowed to skip this turn");

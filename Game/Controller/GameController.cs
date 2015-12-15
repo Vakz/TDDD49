@@ -20,6 +20,30 @@ namespace Game.Controller
             }
         }
 
+        public int ThiefMoney
+        {
+            get {
+                return Game.EscapedThiefMoney;
+            }
+            
+        }
+
+        public int PoliceMoney
+        {
+            get
+            {
+                return Game.PoliceMoney;
+            }
+        }
+
+        public bool GameRunning
+        {
+            get
+            {
+                return Game.GameRunning;
+            }
+        }
+
         public int Height
         {
             get
@@ -80,6 +104,9 @@ namespace Game.Controller
             return Game.Board.Pieces;
         }
 
+        /// <summary>
+        /// Attempts to skip turn
+        /// </summary>
         public void skip() {
             Game.skipTurn();
         }

@@ -10,8 +10,7 @@
         <Menu x:Name="Menu" DockPanel.Dock="Top">
             <MenuItem x:Name="FileMenuItem" Header="_File">
                 <MenuItem x:Name="NewGameButton" Header="_New Game"></MenuItem>
-                <MenuItem Header="_Settings"></MenuItem>
-                <MenuItem Header="_Close"></MenuItem>
+                <MenuItem x:Name="SettingsButton" Header="_Settings"></MenuItem>
             </MenuItem>
         </Menu>
         <dc:GameCanvas x:Name="BoardCanvas" Width="1550" Background="Aqua" Height="750" DockPanel.Dock="Top" />
@@ -27,6 +26,7 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
@@ -48,6 +48,9 @@
                 <dc:TextBlockWithTitle Label="Warning" x:Name="Error" Visibility="Hidden" />
             </StatusBarItem>
             <StatusBarItem Grid.Column="7">
+                <Button Visibility="Hidden" x:Name="AttemptEscape">Attempt escape</Button>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="8">
                 <Button x:Name="Skip">Skip Turn</Button>
             </StatusBarItem>
         </StatusBar>
