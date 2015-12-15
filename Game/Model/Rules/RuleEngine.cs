@@ -37,20 +37,35 @@ namespace Game.Model.Rules
             return canReach(piece, dest, cost);
         }
 
+        public bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t)
+        {
+            PieceCanPassPoint canPass = new PieceCanPassPoint(t, _board, this);
+            return pf.getClosestPointOfInterest(t.Position, hideouts, canPass) == Point.Error;
+        }
+
         private bool canReach(Piece piece, Point dest, int cost) {
+            PieceCanPassPoint canPass = new PieceCanPassPoint(piece, _board, this);
             if ( cost == -1 ) {
-                return pathfinder.getShortestPath(piece, dest, canPass).Count != 0;
+                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count != 0;
             } else if (_board[dest].Type == BlockType.EscapeAirport) {
-                return pathfinder.getShortestPath(piece, dest, canPass).Count <= cost;
+                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count <= cost;
             } else {
-                return pathfinder.getPathWithExactCost(piece, dest, cost, canPass).Count == cost;
+                return pathfinder.getPathWithExactCost(piece.Position, dest, cost, canPass).Count == cost;
             }
         }
 
-        public bool canPass(Point pt, Piece p)
-        {
-            
-            return (p.Type == PieceType.Police && _board[pt].Type == BlockType.Bank) || isAllowedOn(pt, p);
+        private class PieceCanPassPoint : PathFinder.CanPass {
+            private Piece piece;
+            private Board board;
+            private RuleEngine rule_engine;
+            public PieceCanPassPoint(Piece piece, Board board, RuleEngine rule_engine){
+                this.piece = piece;
+                this.rule_engine = rule_engine;
+                this.board = board;
+            }
+            public override bool check(Point pt){
+                return (piece.Type == PieceType.Police && board[pt].Type == BlockType.Bank) || rule_engine.isAllowedOn(pt, piece);
+            }
         }
 
         public bool canArrestAt(Piece p, Point pt)

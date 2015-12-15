@@ -29,14 +29,19 @@ namespace Game.Model.Logic
             }
         }
 
-        public delegate bool canPassCheck( Point pt, Piece p );
+        //public delegate bool canPassCheck( Point pt, Piece p );
+        
+        public class CanPass {
+            protected CanPass() {}
+            public virtual bool check(Point position) { throw new NotImplementedException("override this method"); }
+        }
 
-        private void updateCosts( Piece p, Point pos, canPassCheck canPass, int cost=0 ){
+        private void updateCosts( Point pos, CanPass canPass, int cost=0 ){
             // ingen spelare får gå utanför kartan:
             if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
             if (costs[pos.X, pos.Y] <= cost) return;
 
-            if ( !canPass( pos, p ) ) return;
+            if ( !canPass.check( pos ) ) return;
 
             if (cost < costs[pos.X, pos.Y]){ 
                 //sätt kostnad:
@@ -49,14 +54,14 @@ namespace Game.Model.Logic
                 };
 
                 foreach (Point pt in neighbours){
-                    updateCosts(p, pt,canPass, cost + 1);
+                    updateCosts(pt,canPass, cost + 1);
                 }
             }
         }
 
-        public Point getClosestPointOfInterest(Piece p, List<Point> POIs, canPassCheck canPass){
+        public Point getClosestPointOfInterest(Point pos, List<Point> POIs, CanPass canPass){
             resetCosts();
-            updateCosts(p, p.Position, canPass);
+            updateCosts(pos, canPass);
 
             Point closest_point = Point.Error;
             int   closest_cost  = int.MaxValue;
@@ -72,10 +77,10 @@ namespace Game.Model.Logic
             return closest_point;
         
         }
-        public List<Point> getPathWithExactCost(Piece p, Point goal, int exact_cost, canPassCheck canPass){
+        public List<Point> getPathWithExactCost(Point current_pos, Point goal, int exact_cost, CanPass canPass){
             List<Point> path = new List<Point>();
             resetCosts();
-            updateCosts(p, goal, canPass);
+            updateCosts(goal, canPass);
 
             Point[] neighbour_offset = new Point[]
             {
@@ -84,14 +89,15 @@ namespace Game.Model.Logic
             };
 
             foreach ( Point pt in neighbour_offset ){
-                Point pos = p.Position+pt;
-                if ( costs[pos.X, pos.Y] == exact_cost-1 ){
+                Point new_pos = current_pos + pt;
+                if (costs[new_pos.X, new_pos.Y] == exact_cost - 1)
+                {
                     // blockera rutan vi stod på:
-                    costs[p.Position.X, p.Position.Y] = int.MaxValue;   // istället för detta kan man alternativt använda en ändrad callbackfuktion
+                    costs[current_pos.X, current_pos.Y] = int.MaxValue;   // istället för detta kan man alternativt använda en ändrad callbackfuktion
                     // hitta kortaste väg från den nya punkten:
-                    path = getShortestPath(p, goal, canPass, false);
+                    path = getShortestPath( current_pos, goal, canPass, false );
                     if (path.Count != 0){
-                        path.Insert(0, pos);
+                        path.Insert(0, new_pos);
                     }
                     return path;
                 }
@@ -100,20 +106,21 @@ namespace Game.Model.Logic
             return new List<Point>();
         }
 
-        public List<Point> getShortestPath(Piece p, Point goal, canPassCheck canPass){
-            return getShortestPath(p, goal, canPass, true);
+        public List<Point> getShortestPath(Point current_pos, Point goal, CanPass canPass)
+        {
+            return getShortestPath(current_pos, goal, canPass, true);
         }
 
-        private List<Point> getShortestPath( Piece p, Point goal, canPassCheck canPass, bool recalcPaths ){
+        private List<Point> getShortestPath( Point current_pos, Point goal, CanPass canPass, bool recalcPaths ){
             List<Point> path = new List<Point>();
 
-            if (costs[p.Position.X, p.Position.Y] == int.MaxValue) return path;
-            if (p.Position == goal) return path;
+            if (costs[current_pos.X, current_pos.Y] == int.MaxValue) return path;
+            if (current_pos == goal) return path;
 
             // spelplanen behöver inte alltid räknas om:
             if (recalcPaths){
                 resetCosts();
-                updateCosts(p, goal, canPass);
+                updateCosts(goal, canPass);
             }
 
             Point[] neighbour_offsets = new Point[]
@@ -124,7 +131,7 @@ namespace Game.Model.Logic
 
             /* om det inte fungerar helt så kolla *
              * gärna om i ska börja på 1 eller 0  */
-            Point min_pos = p.Position;
+            Point min_pos = current_pos;
             do {
                 Point last_point = min_pos;
                 foreach ( Point neighbour_offset in neighbour_offsets ){

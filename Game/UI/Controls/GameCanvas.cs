@@ -32,8 +32,22 @@ namespace Game.UI.Controls
             BoardBlocks[p] = block;
         }
 
-        public void addLine(Color c, GamePoint[] stations)
+
+
+
+        private class LinePathPassCheck : PathFinder.CanPass {
+            Dictionary<GamePoint, BlockType> blocks;
+            public LinePathPassCheck( Dictionary<GamePoint, BlockType> blocks ){
+                this.blocks = blocks;
+            }
+        }
+
+
+
+        public void addLine(Color c, List<GamePoint> stations)
         {
+            BoardStations[c] = stations;
+            BoardLines[c] = new List<GamePoint>();
             //TODO: kalla på pathfinding för att lägga till BoardLines
 
         }
@@ -102,6 +116,23 @@ namespace Game.UI.Controls
             foreach ( GamePoint p in BoardBlocks.Keys ){
                 BlockType bt = BoardBlocks[p];
                 dc.DrawImage(BlockBitmaps[bt], new Rect(p.X*_tileSize, p.Y*_tileSize, _tileSize, _tileSize));
+
+                // draw black outline:
+                Brush selection_brush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                Pen selection_pen = new Pen(selection_brush, 1.0);
+
+                Point start = new Point(BoardSelection.X * _tileSize, BoardSelection.Y * _tileSize);
+                Point[] points = new Point[]{
+                    new Point( start.X, start.Y ),
+                    new Point( start.X+_tileSize, start.Y ),
+                    new Point( start.X+_tileSize, start.Y+_tileSize ),
+                    new Point( start.X, start.Y+_tileSize )
+                };
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    dc.DrawLine(selection_pen, points[i], points[(i + 1) % points.Length]);
+                }
             }
 
             // draw lines:

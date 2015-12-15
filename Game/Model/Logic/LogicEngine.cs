@@ -27,11 +27,6 @@ namespace Game.Model.Logic
             return p  != Game.Model.DataStructures.Point.Error && (p.X >= 0 && p.Y >= 0 && p.X < width && p.Y < height);
         }
 
-        public static bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t, PathFinder.canPassCheck pred)
-        {
-            return pf.getClosestPointOfInterest(t, hideouts, pred) == Point.Error;
-        }
-
         public bool escapingThiefPred(ThiefPlayer tp) {
             return tp.Piece.Type == PieceType.Thief && tp.Piece.Alive && tp.Piece.Arrestable
                             && new[] { BlockType.EscapeAirport, BlockType.EscapeCheap }.Any(b => board[tp.Piece.Position].Type == b);

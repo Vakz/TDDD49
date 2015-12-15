@@ -25,6 +25,14 @@ namespace Game.Model.DataStructures
             Type = PieceType.Police;
             Position = p;
         }
+
+        public static Piece Error
+        {
+            get
+            {
+                return new Piece(Point.Error);
+            }
+        }
     }
 
     public enum PieceType
