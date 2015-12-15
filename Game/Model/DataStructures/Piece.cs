@@ -27,6 +27,14 @@ namespace Game.Model.DataStructures
             Active = true;
             Alive = true;
         }
+
+        public static Piece Error
+        {
+            get
+            {
+                return new Piece(Point.Error);
+            }
+        }
     }
 
     public enum PieceType
