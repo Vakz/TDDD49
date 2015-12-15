@@ -32,6 +32,10 @@ namespace Game.UI.Controls
             public LinePathPassCheck( Dictionary<GamePoint, BlockType> blocks ){
                 this.blocks = blocks;
             }
+            public override bool check(GamePoint position)
+            {
+                return blocks[position] == BlockType.Path; 
+            }
         }
 
         public void addBlock(BlockType block, GamePoint p)
@@ -66,6 +70,9 @@ namespace Game.UI.Controls
         private Dictionary<GamePoint, PieceType>    BoardPieces;
         private Dictionary<Color, List<GamePoint>>  BoardLines;
         private Dictionary<Color, List<GamePoint>>  BoardStations;
+
+        private Dictionary<Color, GamePoint> marked_squares;
+        
         private GamePoint _boardSelection = GamePoint.Error;
         public GamePoint                           BoardSelection {
             set {
@@ -174,25 +181,33 @@ namespace Game.UI.Controls
                 dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
             }
 
-            // TODO: Refactor to function, so it can be reused to draw border around current player piece(s)
             // draw selection:
-            if (BoardSelection != GamePoint.Error){
-                Brush selection_brush = new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0x00));
-                Pen   selection_pen   = new Pen(selection_brush, 2.0);
-
-                Point start = new Point( BoardSelection.X*_tileSize, BoardSelection.Y*_tileSize );
-                Point[] points = new Point[]{
-                    new Point( start.X, start.Y ),
-                    new Point( start.X+_tileSize, start.Y ),
-                    new Point( start.X+_tileSize, start.Y+_tileSize ),
-                    new Point( start.X, start.Y+_tileSize )
-                };
-                
-                for (int i = 0; i < points.Length; i++ )
-                {
-                    dc.DrawLine( selection_pen, points[i], points[(i + 1) % points.Length] );
-                }
+            if ( BoardSelection != GamePoint.Error ){
+                drawOutline( Color.FromRgb(0xff, 0xff, 0x00), BoardSelection, dc);
             }
+            
+        }
+
+        private void drawOutline(Color c, GamePoint p, DrawingContext dc )
+        {
+            Brush selection_brush = new SolidColorBrush(c);
+            Pen selection_pen = new Pen(selection_brush, 2.0);
+
+            Point start = new Point(p.X * _tileSize, p.Y * _tileSize);
+            Point[] points = new Point[]
+            {
+                new Point( start.X, start.Y ),
+                new Point( start.X+_tileSize, start.Y ),
+                new Point( start.X+_tileSize, start.Y+_tileSize ),
+                new Point( start.X, start.Y+_tileSize )
+            };
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                dc.DrawLine(selection_pen, points[i], points[(i + 1) % points.Length]);
+            }
+        
+        
         }
 
         private int _tileSize = 30;

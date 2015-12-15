@@ -19,6 +19,7 @@ namespace Game.Model.Logic
             this.width  = width;
             this.height = height;
             this.costs = new int[width, height];
+            resetCosts();
         }
 
         private void resetCosts(){
@@ -29,38 +30,52 @@ namespace Game.Model.Logic
             }
         }
 
-        //public delegate bool canPassCheck( Point pt, Piece p );
-        
+        private bool validIndex(int x, int y)
+        {
+            return (0 <= x && x < width) && (0 <= y && y < height);
+        }
+
+
         public class CanPass {
             protected CanPass() {}
             public virtual bool check(Point position) { throw new NotImplementedException("override this method"); }
         }
 
-        private void updateCosts( Point pos, CanPass canPass, int cost=0 ){
+        private List<Point> getNeighbourPositions( Point pos ){
+            return new List<Point>
+            {
+                pos + new Point(  1, 0 ),
+                pos + new Point( -1, 0 ),
+                pos + new Point(  0, 1 ),
+                pos + new Point(  0,-1 )
+            };
+        }
+
+        private void updateCosts( Point pos, CanPass canPass ){
+            resetCosts();
             // ingen spelare får gå utanför kartan:
-            if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return;
-            if (costs[pos.X, pos.Y] <= cost) return;
+            if (!validIndex(pos.X, pos.Y)) return;
 
-            if ( !canPass.check( pos ) ) return;
+            costs[pos.X, pos.Y] = 0;
+            List<Point> position_queue = new List<Point>{ pos };
 
-            if (cost < costs[pos.X, pos.Y]){ 
-                //sätt kostnad:
-                costs[pos.X, pos.Y] = cost;
-                //kolla grannar:
-                Point[] neighbours = new Point[]
+            while (position_queue.Count != 0)
+            {
+                Point current = position_queue[0];
+                position_queue.RemoveAt(0);
+                int new_cost = costs[current.X,current.Y] + 1;
+                foreach (Point p in getNeighbourPositions(current))
                 {
-                    pos + new Point( 1, 0 ), pos + new Point( 0, 1 ),
-                    pos + new Point(-1, 0 ), pos + new Point( 0,-1 ),
-                };
-
-                foreach (Point pt in neighbours){
-                    updateCosts(pt,canPass, cost + 1);
+                    if ( validIndex(p.X,p.Y) && canPass.check(p) && new_cost < costs[p.X,p.Y] )
+                    {
+                        costs[p.X, p.Y] = new_cost;
+                        position_queue.Insert(position_queue.Count - 1, p);
+                    }
                 }
             }
         }
 
         public Point getClosestPointOfInterest(Point pos, List<Point> POIs, CanPass canPass){
-            resetCosts();
             updateCosts(pos, canPass);
 
             Point closest_point = Point.Error;
