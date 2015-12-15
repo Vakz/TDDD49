@@ -15,11 +15,10 @@ namespace Game.Model.Logic
         private int         height;
         private Board       board;
 
-        public PathFinder(Board board){
-            this.board  = board;
-            this.width  = board.Width;
-            this.height = board.Height;
-            this.costs = new int[board.Width, board.Height];
+        public PathFinder(int width, int height){
+            this.width  = width;
+            this.height = height;
+            this.costs = new int[width, height];
         }
 
         private void resetCosts(){

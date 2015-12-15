@@ -18,7 +18,7 @@ namespace Game.Model.Rules
         public RuleEngine(Board board)
         {
             _board = board;
-            pathfinder = new PathFinder(_board);
+            pathfinder = new PathFinder( _board.Width, _board.Height );
         }
 
         public bool canMoveTo(Piece piece, Point dest, int cost = -1)

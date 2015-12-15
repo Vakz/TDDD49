@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
+using Game.Model.Logic;
 using GamePoint = Game.Model.DataStructures.Point;
 
 namespace Game.UI.Controls
@@ -34,11 +35,17 @@ namespace Game.UI.Controls
         public void addLine(Color c, GamePoint[] stations)
         {
             //TODO: kalla på pathfinding för att lägga till BoardLines
+
         }
 
         public void setPieces(Dictionary<GamePoint, PieceType> pieces)
         {
             BoardPieces = pieces;
+        }
+
+        public void setPathFinder( int width, int height )
+        {
+            path_finder = new PathFinder( width, height );
         }
 
         private Dictionary<GamePoint, BlockType>    BoardBlocks;
@@ -47,6 +54,7 @@ namespace Game.UI.Controls
         private Dictionary<Color, List<GamePoint>>  BoardStations;
         private GamePoint                           BoardSelection;
 
+        private PathFinder path_finder;
 
         public void clearDrawData(){
             //private BlockType[,]                       
@@ -79,30 +87,47 @@ namespace Game.UI.Controls
             };
 
             clearDrawData();
+
+            BoardSelection = new GamePoint(1, 1);
         }
-
-
-        public void updateCanvasData(){ }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
         {
  	        base.OnRender(dc);
             
-            ImageSource trumpie = new BitmapImage( new Uri( Directory.GetCurrentDirectory()+"\\Resources\\trumpman.jpg") );
-            
-            dc.DrawImage( trumpie, new Rect(0, 0, _tileSize, _tileSize ) );
+            //ImageSource trumpie = new BitmapImage( new Uri( Directory.GetCurrentDirectory()+"\\Resources\\trumpman.jpg") );
+            //dc.DrawImage( trumpie, new Rect(0, 0, _tileSize, _tileSize ) );
 
             // draw blocks:
             foreach ( GamePoint p in BoardBlocks.Keys ){
                 BlockType bt = BoardBlocks[p];
-                dc.DrawImage(BlockBitmaps[bt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
+                dc.DrawImage(BlockBitmaps[bt], new Rect(p.X*_tileSize, p.Y*_tileSize, _tileSize, _tileSize));
             }
 
-            // draw stations and lines:
-            //BoardLines = new Dictionary<Color, List<GamePoint>>();
-            //BoardStations = new Dictionary<Color, List<GamePoint>>();
+            // draw lines:
+            foreach ( Color c in BoardLines.Keys ){
+                Brush brush = new SolidColorBrush( c );
+                Pen   pen   = new Pen( brush, 1.5 );
 
-            //
+                for (int i = 1; i < BoardLines[c].Count; i++ )
+                {
+                    Point a = new Point( BoardLines[c][i-1].X, BoardLines[c][i-1].Y );
+                    Point b = new Point( BoardLines[c][ i ].X, BoardLines[c][ i ].Y );
+
+                    dc.DrawLine( pen, a, b );
+                }
+            }
+
+            // draw stations:
+            foreach (Color c in BoardStations.Keys){
+                Brush brush = new SolidColorBrush(c);
+                Pen pen = new Pen(brush, 1.0);
+
+                foreach ( GamePoint p in BoardStations[c] ){
+                    Point center = new Point( p.X, p.Y );
+                    dc.DrawEllipse( brush, pen, center, ((double)_tileSize)/2.0, ((double)_tileSize)/2.0 );
+                }
+            }
 
             // draw pieces:
             foreach (GamePoint p in BoardPieces.Keys){
@@ -111,9 +136,26 @@ namespace Game.UI.Controls
             }
 
             // draw selection:
+            if (BoardSelection != GamePoint.Error){
+                Brush selection_brush = new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0x00));
+                Pen   selection_pen   = new Pen(selection_brush, 2.0);
+
+                Point start = new Point( BoardSelection.X*_tileSize, BoardSelection.Y*_tileSize );
+                Point[] points = new Point[]{
+                    new Point( start.X, start.Y ),
+                    new Point( start.X+_tileSize, start.Y ),
+                    new Point( start.X+_tileSize, start.Y+_tileSize ),
+                    new Point( start.X, start.Y+_tileSize )
+                };
+                
+                for (int i = 0; i < points.Length; i++ )
+                {
+                    dc.DrawLine( selection_pen, points[i], points[(i + 1) % points.Length] );
+                }
+            }
         }
 
-        private int _tileSize = 50;
+        private int _tileSize = 20;
         public int TileSize{
             get {
                 return _tileSize;
