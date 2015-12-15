@@ -31,12 +31,12 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame(1, 1, true);
-            //System.Console.WriteLine(Game.getAllPieces());
+            InitializeGame(1, true);
+            
             Selected = BoardPoint.Error;
         }
 
-        private void InitializeGame(int nrOfHumans, int nrOfAI, bool AIPolice)
+        private void InitializeGame(int nrOfHumans, bool AIPolice)
         {
             Game = new GameController(nrOfHumans, AIPolice);
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
@@ -45,8 +45,7 @@ namespace Game
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
             
-            //var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
-            var clicked = new BoardPoint(1, 1);
+            var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
 
             System.Console.WriteLine("Enter click-function");
             // No currently selected tile
