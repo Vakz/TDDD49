@@ -24,6 +24,8 @@ namespace Game.Model.DataStructures
         {
             Type = PieceType.Police;
             Position = p;
+            Active = true;
+            Alive = true;
         }
     }
 

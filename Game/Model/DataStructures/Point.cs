@@ -45,6 +45,11 @@ namespace Game.Model.DataStructures
         {
             return new Point(a.X + b.X, a.Y + b.Y);
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0};{1}", X, Y);
+        }
     }
 
     

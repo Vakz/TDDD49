@@ -35,6 +35,8 @@ namespace Game.Model
         public abstract bool allowedToMovePiece(Piece p);
 
         public abstract List<Piece> getControlledPieces();
+
+        public abstract bool anyInPlay();
     }
 
 

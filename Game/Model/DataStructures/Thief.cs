@@ -26,6 +26,7 @@ namespace Game.Model.DataStructures
             ArrestCount++;
             Arrestable = false;
             ArrestTurns = turns;
+            Active = false;
             return temp;
         }
 

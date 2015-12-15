@@ -41,5 +41,10 @@ namespace Game.Model
         {
             return _pieces;
         }
+
+        public override bool anyInPlay()
+        {
+            return true; // Police always has at least one piece in play while game is running
+        }
     }
 }

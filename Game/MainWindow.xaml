@@ -25,20 +25,30 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            <StatusBarItem>
+            <StatusBarItem Grid.Column="0">
                 <dc:TextBlockWithTitle Label="Money" x:Name="Money" Data="0"></dc:TextBlockWithTitle>
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
-                <TextBlock Name="Wanted" Text="Wanted!" Visibility="Hidden"></TextBlock>
+                <dc:TextBlockWithTitle x:Name="Dice" Label="Dice roll"></dc:TextBlockWithTitle>
             </StatusBarItem>
             <Separator Grid.Column="3" />
             <StatusBarItem Grid.Column="4">
-                <dc:TextBlockWithTitle x:Name="Error" Visibility="Hidden" />
+                <TextBlock Name="Wanted" Text="Wanted!" Visibility="Hidden"></TextBlock>
+            </StatusBarItem>
+            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="6">
+                <dc:TextBlockWithTitle Label="Warning" x:Name="Error" Visibility="Hidden" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <Button x:Name="Skip">Skip Turn</Button>
             </StatusBarItem>
         </StatusBar>
     </DockPanel>

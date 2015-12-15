@@ -79,5 +79,17 @@ namespace Game.Controller
         {
             return Game.Board.Pieces;
         }
+
+        public void skip() {
+            Game.skipTurn();
+        }
+
+        public int DiceRoll
+        {
+            get
+            {
+                return Game.CurrentPlayerDiceRoll;
+            }
+        }
     }
 }

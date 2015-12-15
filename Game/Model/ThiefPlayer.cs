@@ -10,16 +10,6 @@ namespace Game.Model
     class ThiefPlayer : Player
     {
         public Thief Piece { get; private set; }
-        private bool _active;
-
-        public bool Active
-        {
-            get
-            {
-                return _active && Piece.ArrestTurns == 0;
-            }
-            set { _active = value;}
-        }
 
         public ThiefPlayer(Point startingPosition)
         {
@@ -28,12 +18,17 @@ namespace Game.Model
 
         public override bool allowedToMovePiece(Piece p)
         {
-            return Active && p.Position == Piece.Position;
+            return Piece.Active && p == Piece;
         }
 
         public override List<Piece> getControlledPieces()
         {
             return new List<Piece>() { Piece };
+        }
+
+        public override bool anyInPlay()
+        {
+            return Piece.Alive;
         }
     }
 }

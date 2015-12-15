@@ -26,6 +26,7 @@ namespace Game.Controller
         public int CurrentPlayerIndex { get; private set; }
 
         public BoardController(int nrOfPlayers) {
+            System.Console.WriteLine("Creating board controller");
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
             Players = new List<Player>();
             Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
@@ -33,6 +34,8 @@ namespace Game.Controller
             addPolicePlayer(nrOfPlayers);
             ruleEngine = new RuleEngine(Board);
             logicEngine = new LogicEngine(Board);
+            CurrentPlayerDiceRoll = LogicEngine.diceRoll(); // Initial player roll
+            CurrentPlayerIndex = Players.Count - 1;
             GameRunning = true;
         }
 
@@ -44,10 +47,12 @@ namespace Game.Controller
         {
             try
             {
-                for (int i = 0; i < nrOfPlayers - 1; ++i)
+                for (int i = 0; i < nrOfPlayers; ++i)
                 {
+                    System.Console.WriteLine("Adding thief player");
                     ThiefPlayer tp = new ThiefPlayer(Board.getUnoccupiedByBlockType(BlockType.Hideout));
                     thiefPlayers.Add(tp);
+                    Board.addPiece(tp.Piece);
                     Players.Add(tp);
                     aliveThiefPlayers++;
                 }
@@ -72,21 +77,15 @@ namespace Game.Controller
             }
             policePlayer = new PolicePlayer(spawnpoints);
             Players.Add(policePlayer);
+            Board.addPiece(policePlayer.getControlledPieces());
         }
 
         
 
         public bool move(Point src, Point dest)
         {
-            try
-            {
-                Piece p = Board.getPieceAt(src);
-                return movePiece(p, dest);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            Piece p = Board.getPieceAt(src);
+            return movePiece(p, dest);
         }
 
         /// <summary>
@@ -139,15 +138,13 @@ namespace Game.Controller
         /// </summary>
         /// <param name="p">Piece requesting skip</param>
         /// <returns>True if skip was allowed and turn ended</returns>
-        public bool skipTurn(Piece p)
+        public void skipTurn()
         {
-            if (ruleEngine.isAllowedToSkipTurn(p))
-            {
-                p.TurnsOnCurrentPosition++;
-                endTurn();
-                return true;
-            }
-            return false;
+            Player p = Players[CurrentPlayerIndex];
+            System.Console.WriteLine(p.getControlledPieces()[0].Type);
+            if (!p.getControlledPieces().TrueForAll(ruleEngine.isAllowedToSkipTurn)) throw new IllegalMoveException("Player is not allowed to skip this turn");
+            p.getControlledPieces().ForEach(s => s.TurnsOnCurrentPosition++);
+            endTurn();
         }
 
         /// <summary>
@@ -204,6 +201,7 @@ namespace Game.Controller
         public void nextPlayer()
         {
             CurrentPlayerIndex = (CurrentPlayerIndex+1) % Players.Count;
+            if (!Players[CurrentPlayerIndex].anyInPlay()) nextPlayer(); // Will cause multiple die rolls
             CurrentPlayerDiceRoll = LogicEngine.diceRoll();
         }
     }

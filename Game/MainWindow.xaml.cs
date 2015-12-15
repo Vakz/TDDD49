@@ -26,33 +26,54 @@ namespace Game
     {
         GameController Game;
         BoardPoint Selected { get; set; }
-        int BlockSize { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeGame(1, true);
-            
+            System.Console.WriteLine(Game.getAllPieces().Count);
+            System.Console.WriteLine(Game.getAllPieces().First(s => s.Type == Model.DataStructures.PieceType.Thief).Position.ToString());
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Special, new BoardPoint(6, 2));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(6, 1));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(5, 1));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(4, 1));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(3, 1));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(2, 1));
+            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(1, 1));
+            Dice.Data = Game.DiceRoll.ToString();
             Selected = BoardPoint.Error;
+            BoardCanvas.MouseLeftButtonDown += CanvasClick;
+            Skip.Click += SkipClick;
         }
 
         private void InitializeGame(int nrOfHumans, bool AIPolice)
         {
             Game = new GameController(nrOfHumans, AIPolice);
-            BoardCanvas.MouseLeftButtonDown += CanvasClick;
+            
+        }
+
+        private void SkipClick(object Sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Game.skip();
+            }
+            catch (Exceptions.IllegalMoveException ime)
+            {
+                setError(ime.Message);
+            }
         }
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
-            
+            if (Error.Visibility == System.Windows.Visibility.Visible) Error.Visibility = System.Windows.Visibility.Hidden;
             var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
-
             System.Console.WriteLine("Enter click-function");
             // No currently selected tile
-            
+            System.Console.WriteLine(clicked);
             if (Selected == BoardPoint.Error)
             {
-                System.Console.WriteLine("No piece!");
+                System.Console.WriteLine("No piece previously selected");
                 Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             }
             // Clicked same tile, deselect
@@ -71,17 +92,21 @@ namespace Game
                 }
                 catch(Game.Exceptions.IllegalMoveException ime)
                 {
-                    Error.Text = ime.Message;
+                    setError(ime.Message);
                 }
-               
             }
         }
 
+        private void setError(string message)
+        {
+            Error.Data = message;
+            Error.Visibility = System.Windows.Visibility.Visible;
+        }
+
         private BoardPoint pixelCoordsToBlockCoords(BoardPoint p) {
-            int blockSize = (int)BoardCanvas.ActualHeight / Game.Height;
             return new BoardPoint(
-                p.X / blockSize,
-                p.Y / blockSize
+                p.X / BoardCanvas.TileSize,
+                p.Y / BoardCanvas.TileSize
             );
         }
     }
