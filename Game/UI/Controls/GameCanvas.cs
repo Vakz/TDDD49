@@ -66,7 +66,16 @@ namespace Game.UI.Controls
         private Dictionary<GamePoint, PieceType>    BoardPieces;
         private Dictionary<Color, List<GamePoint>>  BoardLines;
         private Dictionary<Color, List<GamePoint>>  BoardStations;
-        public GamePoint                           BoardSelection;
+        private GamePoint _boardSelection = GamePoint.Error;
+        public GamePoint                           BoardSelection {
+            set {
+                _boardSelection = value;
+                this.InvalidateVisual();
+            }
+            get {
+                return _boardSelection;
+            }
+        }
 
         private PathFinder path_finder;
 

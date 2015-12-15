@@ -69,6 +69,8 @@ namespace Game
             try
             {
                 Game.skip();
+                Error.Visibility = System.Windows.Visibility.Hidden;
+                Selected = BoardPoint.Error;
             }
             catch (Exceptions.IllegalMoveException ime)
             {
@@ -100,7 +102,10 @@ namespace Game
                 System.Console.WriteLine("Attempting to move");
                 try
                 {
-                    if (Game.move(Selected, clicked)) Selected = BoardPoint.Error;
+                    if (Game.move(Selected, clicked))
+                    {
+                        Selected = BoardPoint.Error;
+                    }
                 }
                 catch(Game.Exceptions.IllegalMoveException ime)
                 {
