@@ -174,6 +174,7 @@ namespace Game.UI.Controls
                 dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
             }
 
+            // TODO: Refactor to function, so it can be reused to draw border around current player piece(s)
             // draw selection:
             if (BoardSelection != GamePoint.Error){
                 Brush selection_brush = new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0x00));

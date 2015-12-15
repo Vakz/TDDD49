@@ -33,8 +33,7 @@ namespace Game.Model.Rules
                     return true;
                 }
             }
-            // TODO: More cases?
-            return canReach(piece, dest, cost);
+            return true;// canReach(piece, dest, cost);
         }
 
         public bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t)

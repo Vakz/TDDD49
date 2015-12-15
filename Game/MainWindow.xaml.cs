@@ -85,27 +85,16 @@ namespace Game
             System.Console.WriteLine("Enter click-function");
             // No currently selected tile
             System.Console.WriteLine(clicked);
-            if (Selected == BoardPoint.Error)
-            {
-                System.Console.WriteLine("No piece previously selected");
-                Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
-            }
+            if (Selected == BoardPoint.Error) Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             // Clicked same tile, deselect
-            else if (Selected == clicked)
-            {
-                System.Console.WriteLine("Deselected");
-                Selected = BoardPoint.Error;
-            }
+            else if (Selected == clicked) Selected = BoardPoint.Error;
             // Selected exists, new tile selected. Attempt to move, and if successful, deselect
             else if (Selected != BoardPoint.Error)
             {
                 System.Console.WriteLine("Attempting to move");
                 try
                 {
-                    if (Game.move(Selected, clicked))
-                    {
-                        Selected = BoardPoint.Error;
-                    }
+                    if (Game.move(Selected, clicked)) Selected = BoardPoint.Error;
                 }
                 catch(Game.Exceptions.IllegalMoveException ime)
                 {
