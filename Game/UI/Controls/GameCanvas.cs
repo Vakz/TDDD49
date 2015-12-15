@@ -66,7 +66,7 @@ namespace Game.UI.Controls
         private Dictionary<GamePoint, PieceType>    BoardPieces;
         private Dictionary<Color, List<GamePoint>>  BoardLines;
         private Dictionary<Color, List<GamePoint>>  BoardStations;
-        private GamePoint                           BoardSelection;
+        public GamePoint                           BoardSelection;
 
         private PathFinder path_finder;
 
@@ -118,10 +118,10 @@ namespace Game.UI.Controls
                 dc.DrawImage(BlockBitmaps[bt], new Rect(p.X*_tileSize, p.Y*_tileSize, _tileSize, _tileSize));
 
                 // draw black outline:
-                Brush selection_brush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
-                Pen selection_pen = new Pen(selection_brush, 1.0);
+                Brush outline_brush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                Pen outline_pen = new Pen(outline_brush, 0.5);
 
-                Point start = new Point(BoardSelection.X * _tileSize, BoardSelection.Y * _tileSize);
+                Point start = new Point(p.X * _tileSize, p.Y * _tileSize);
                 Point[] points = new Point[]{
                     new Point( start.X, start.Y ),
                     new Point( start.X+_tileSize, start.Y ),
@@ -131,7 +131,7 @@ namespace Game.UI.Controls
 
                 for (int i = 0; i < points.Length; i++)
                 {
-                    dc.DrawLine(selection_pen, points[i], points[(i + 1) % points.Length]);
+                    dc.DrawLine(outline_pen, points[i], points[(i + 1) % points.Length]);
                 }
             }
 
