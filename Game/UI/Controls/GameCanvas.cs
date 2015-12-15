@@ -27,14 +27,6 @@ namespace Game.UI.Controls
             Police
         }
 
-        public void addBlock(BlockType block, GamePoint p)
-        {
-            BoardBlocks[p] = block;
-        }
-
-
-
-
         private class LinePathPassCheck : PathFinder.CanPass {
             Dictionary<GamePoint, BlockType> blocks;
             public LinePathPassCheck( Dictionary<GamePoint, BlockType> blocks ){
@@ -42,7 +34,12 @@ namespace Game.UI.Controls
             }
         }
 
+        public void addBlock(BlockType block, GamePoint p)
+        {
+            BoardBlocks[p] = block;
+            this.InvalidateVisual();
 
+        }
 
         public void addLine(Color c, List<GamePoint> stations)
         {
@@ -50,11 +47,14 @@ namespace Game.UI.Controls
             BoardLines[c] = new List<GamePoint>();
             //TODO: kalla på pathfinding för att lägga till BoardLines
 
+
+            this.InvalidateVisual();
         }
 
         public void setPieces(Dictionary<GamePoint, PieceType> pieces)
         {
             BoardPieces = pieces;
+            this.InvalidateVisual();
         }
 
         public void setPathFinder( int width, int height )
@@ -108,7 +108,6 @@ namespace Game.UI.Controls
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
         {
  	        base.OnRender(dc);
-            
             //ImageSource trumpie = new BitmapImage( new Uri( Directory.GetCurrentDirectory()+"\\Resources\\trumpman.jpg") );
             //dc.DrawImage( trumpie, new Rect(0, 0, _tileSize, _tileSize ) );
 
@@ -186,7 +185,7 @@ namespace Game.UI.Controls
             }
         }
 
-        private int _tileSize = 20;
+        private int _tileSize = 30;
         public int TileSize{
             get {
                 return _tileSize;
@@ -194,6 +193,7 @@ namespace Game.UI.Controls
             set {
                 if (value <= 0) throw new ArgumentException("tile size must be greater than zero");
                 _tileSize = value;
+                this.InvalidateVisual();
             }
         }
     }
