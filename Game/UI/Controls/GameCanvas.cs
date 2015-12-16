@@ -42,7 +42,6 @@ namespace Game.UI.Controls
         {
             BoardBlocks[p] = block;
             this.InvalidateVisual();
-
         }
 
         public void addLine(Color c, List<GamePoint> stations)
