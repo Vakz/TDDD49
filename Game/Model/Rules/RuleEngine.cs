@@ -33,7 +33,7 @@ namespace Game.Model.Rules
                     return true;
                 }
             }
-            return true;// canReach(piece, dest, cost);
+            return canReach(piece, dest, cost);
         }
 
         public bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t)
@@ -49,7 +49,8 @@ namespace Game.Model.Rules
             } else if (_board[dest].Type == BlockType.EscapeAirport) {
                 return pathfinder.getShortestPath(piece.Position, dest, canPass).Count <= cost;
             } else {
-                return pathfinder.getPathWithExactCost(piece.Position, dest, cost, canPass).Count == cost;
+                List<Point> path = pathfinder.getPathWithExactCost(piece.Position, dest, cost, canPass);
+                return path != null && (path.Count - 1) == cost;
             }
         }
 
