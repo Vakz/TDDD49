@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    class Piece
+    public class Piece
     {
         public PieceType Type { get; protected set; }
        

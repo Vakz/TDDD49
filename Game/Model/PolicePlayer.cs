@@ -8,9 +8,10 @@ using System.Collections.ObjectModel;
 
 namespace Game.Model
 {
-    class PolicePlayer : Player
+    class PolicePlayer : IPlayer
     {
         List<Piece> _pieces = new List<Piece>();
+        public int Money { get; set; }
 
         // Set whether a police piece is active or not
         public bool this[Point pt]
@@ -32,17 +33,17 @@ namespace Game.Model
             }
         }
 
-        public override bool allowedToMovePiece(Piece p)
+        public bool allowedToMovePiece(Piece p)
         {
             return p.Type == PieceType.Police && p.Active;
         }
 
-        public override List<Piece> getControlledPieces()
+        public List<Piece> getControlledPieces()
         {
             return _pieces;
         }
 
-        public override bool anyInPlay()
+        public bool anyInPlay()
         {
             return true; // Police always has at least one piece in play while game is running
         }

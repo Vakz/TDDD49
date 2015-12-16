@@ -19,7 +19,7 @@ namespace Game.Model.Logic
 
         public static int diceRoll()
         {
-            return (new Random(new DateTime().Millisecond)).Next(1,7); // Not that random, but good enough for dice rolls
+            return (new Random(DateTime.Now.Millisecond)).Next(1,7); // Not that random, but good enough for dice rolls
         }
 
         public static bool containedIn(Game.Model.DataStructures.Point p, int height, int width)

@@ -116,7 +116,7 @@ namespace Game.UI.Controls
             };
 
             clearDrawData();
-            MarkedSquares.OnChange += delegate() { System.Console.WriteLine("hej"); this.InvalidateVisual(); };
+            MarkedSquares.OnChange += delegate() { this.InvalidateVisual(); };
             BoardSelection = new GamePoint(1, 1);
         }
 

@@ -52,6 +52,12 @@ namespace Game.Controller
             }
         }
 
+        public int? PlayerMoneyAtPoint(Point pt)
+        {
+            if (!pieceExistsAt(pt)) return null;
+            return Game.Players[Game.CurrentPlayerIndex].Money;
+        }
+
         public bool AIPolice { get; private set; }
         public int HumanPlayers { get; set; }
 

@@ -29,7 +29,6 @@ namespace Game.UI
             foreach (TKey k in kList)
             {
                 values[k] = v;
-                System.Console.WriteLine("Added");
             }
             OnChange();
         }

@@ -42,7 +42,7 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame(1, true);
+            InitializeGame(2, true);
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Special, new BoardPoint(6, 2));
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(6, 1));
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(5, 1));
@@ -63,7 +63,11 @@ namespace Game
             int thiefMoney = Game.ThiefMoney;
             int policeMoney = Game.PoliceMoney;
             // Game has ended
-            if (Game.GameRunning) BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
+            if (Game.GameRunning)
+            {
+                BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
+                UpdateInfoPanels();
+            }
             else
             {
                 if (thiefMoney == policeMoney) endMessage = String.Format("It's a tie! Both sides have {0} monies.", thiefMoney);
@@ -89,6 +93,13 @@ namespace Game
             {
                 InitializeGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
             }
+        }
+
+        public void UpdateInfoPanels()
+        {
+            Dice.Data = Game.DiceRoll.ToString();
+            ThiefMoney.Data = Game.ThiefMoney.ToString();
+            PoliceMoney.Data = Game.PoliceMoney.ToString();
         }
 
         public void RestartClick(object Sender, RoutedEventArgs e)
@@ -124,7 +135,6 @@ namespace Game
             
             if (Error.Visibility == System.Windows.Visibility.Visible) Error.Visibility = System.Windows.Visibility.Hidden;
             var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
-            BoardCanvas.MarkedSquares.addMarkedSquare(clicked, Color.FromRgb(255, 0, 0));
             // No currently selected tile
             if (Selected == BoardPoint.Error) Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             // Clicked same tile, deselect
@@ -134,7 +144,11 @@ namespace Game
             {
                 try
                 {
-                    if (Game.move(Selected, clicked)) Selected = BoardPoint.Error;
+                    if (Game.move(Selected, clicked))
+                    {
+                        Selected = BoardPoint.Error;
+                        NewTurn();
+                    }
                 }
                 catch(Game.Exceptions.IllegalMoveException ime)
                 {

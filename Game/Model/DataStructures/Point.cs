@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    struct Point
+    public struct Point
     {
         public Point(int x, int y) : this()
         {

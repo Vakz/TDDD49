@@ -13,6 +13,24 @@
                 <MenuItem x:Name="SettingsButton" Header="_Settings"></MenuItem>
             </MenuItem>
         </Menu>
+        <StatusBar DockPanel.Dock="Top" Height="31" Width="Auto">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <dc:TextBlockWithTitle x:Name="ThiefMoney" Label="Thieves have escaped with"></dc:TextBlockWithTitle>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <dc:TextBlockWithTitle x:Name="PoliceMoney" Label="The police has confiscated"></dc:TextBlockWithTitle>
+            </StatusBarItem>
+        </StatusBar>
         <dc:GameCanvas x:Name="BoardCanvas" Width="1550" Background="Aqua" Height="750" DockPanel.Dock="Top" />
         <StatusBar DockPanel.Dock="Bottom" Height="31" Width="Auto">
             <StatusBar.ItemsPanel>

@@ -15,7 +15,7 @@ namespace Game.Controller
     class BoardController
     {
         public Board Board {get; private set;}
-        public List<Player> Players { get; private set; } // Used to keep track of current player
+        public List<IPlayer> Players { get; private set; } // Used to keep track of current player
         private List<ThiefPlayer> thiefPlayers = new List<ThiefPlayer>();
         private PolicePlayer policePlayer;
         private int aliveThiefPlayers = 0;
@@ -26,9 +26,8 @@ namespace Game.Controller
         public int CurrentPlayerIndex { get; private set; }
 
         public BoardController(int nrOfPlayers) {
-            System.Console.WriteLine("Creating board controller");
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
-            Players = new List<Player>();
+            Players = new List<IPlayer>();
             Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
@@ -49,7 +48,6 @@ namespace Game.Controller
             {
                 for (int i = 0; i < nrOfPlayers; ++i)
                 {
-                    System.Console.WriteLine("Adding thief player");
                     ThiefPlayer tp = new ThiefPlayer(Board.getUnoccupiedByBlockType(BlockType.Hideout));
                     thiefPlayers.Add(tp);
                     Board.addPiece(tp.Piece);
@@ -122,7 +120,7 @@ namespace Game.Controller
             else if (ruleEngine.canArrestAt(p, pt))
             {
                 Thief arrestTarget = (Thief)Board.getPieceAt(pt);
-                ruleEngine.arrest(arrestTarget, p);
+                policePlayer.Money += ruleEngine.arrest(arrestTarget, p);
                 if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
                 {
                     ruleEngine.removePieceFromGame(p);
@@ -163,8 +161,7 @@ namespace Game.Controller
         public void skipTurn()
         {
             if (!GameRunning) throw new ApplicationException("Game is not running!");
-            Player p = Players[CurrentPlayerIndex];
-            System.Console.WriteLine(p.getControlledPieces()[0].Type);
+            IPlayer p = Players[CurrentPlayerIndex];
             if (!p.getControlledPieces().TrueForAll(ruleEngine.isAllowedToSkipTurn)) throw new IllegalMoveException("Player is not allowed to skip this turn");
             p.getControlledPieces().ForEach(s => s.TurnsOnCurrentPosition++);
             endTurn();

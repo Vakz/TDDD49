@@ -7,26 +7,34 @@ using Game.Model.DataStructures;
 
 namespace Game.Model
 {
-    class ThiefPlayer : Player
+    class ThiefPlayer : IPlayer
     {
         public Thief Piece { get; private set; }
+
+        public int Money
+        {
+            get
+            {
+                return Piece.Money;
+            }
+        }
 
         public ThiefPlayer(Point startingPosition)
         {
             Piece = new Thief(startingPosition);
         }
 
-        public override bool allowedToMovePiece(Piece p)
+        public bool allowedToMovePiece(Piece p)
         {
             return Piece.Active && p == Piece;
         }
 
-        public override List<Piece> getControlledPieces()
+        public List<Piece> getControlledPieces()
         {
             return new List<Piece>() { Piece };
         }
 
-        public override bool anyInPlay()
+        public bool anyInPlay()
         {
             return Piece.Alive;
         }

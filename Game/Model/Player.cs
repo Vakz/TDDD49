@@ -8,22 +8,10 @@ using System.Collections.ObjectModel;
 
 namespace Game.Model
 {
-    abstract class Player
+    public interface IPlayer
     {
 
-        private int _money = 0;
-        public int Money
-        {
-            get
-            {
-                return _money;
-            }
-            set
-            {
-                if (value < 0) throw new ArgumentException("Cannot set negative money");
-                _money = value;
-            }
-        }
+        int Money { get; }
 
         /// <summary>
         /// Used to make sure the piece a player is attempting to move is actually
@@ -32,11 +20,11 @@ namespace Game.Model
         /// </summary>
         /// <param name="p">The piece to be moved</param>
         /// <returns>True if player is allowed to move p</returns>
-        public abstract bool allowedToMovePiece(Piece p);
+        bool allowedToMovePiece(Piece p);
 
-        public abstract List<Piece> getControlledPieces();
+        List<Piece> getControlledPieces();
 
-        public abstract bool anyInPlay();
+        bool anyInPlay();
     }
 
 
