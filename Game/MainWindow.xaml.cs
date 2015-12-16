@@ -54,29 +54,31 @@ namespace Game
             Skip.Click += SkipClick;
             SettingsButton.Click += SettingsClick;
             NewGameButton.Click += RestartClick;
+            NewTurn();
         }
 
-        public void EndTurn()
+        public void NewTurn()
         {
             string endMessage = "";
             int thiefMoney = Game.ThiefMoney;
             int policeMoney = Game.PoliceMoney;
-            if (thiefMoney == policeMoney) endMessage = String.Format("It's a tie! Both sides have {0} monies.", thiefMoney);
+            // Game has ended
+            if (Game.GameRunning) BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
             else
             {
-                string winner = thiefMoney > policeMoney ? "thieves" : "police";
-                string winnerMoney = (thiefMoney > policeMoney ? thiefMoney : policeMoney).ToString();
-                string loser = thiefMoney < policeMoney ? "thieves" : "police";
-                string loserMoney = (thiefMoney < policeMoney ? thiefMoney : policeMoney).ToString();
-                endMessage = String.Format("The game is over! The {0} won against the {1}, with {2} monies over {3} monies.", winner, loser, winnerMoney, loserMoney);
+                if (thiefMoney == policeMoney) endMessage = String.Format("It's a tie! Both sides have {0} monies.", thiefMoney);
+                else
+                {
+                    string winner = thiefMoney > policeMoney ? "thieves" : "police";
+                    string winnerMoney = (thiefMoney > policeMoney ? thiefMoney : policeMoney).ToString();
+                    string loser = thiefMoney < policeMoney ? "thieves" : "police";
+                    string loserMoney = (thiefMoney < policeMoney ? thiefMoney : policeMoney).ToString();
+                    endMessage = String.Format("The game is over! The {0} won against the {1}, with {2} monies over {3} monies.", winner, loser, winnerMoney, loserMoney);
+                }
+
+                MessageBox.Show(endMessage, "Game Over", MessageBoxButton.OK, MessageBoxImage.None);
             }
             
-            MessageBox.Show(endMessage, "Game Over", MessageBoxButton.OK, MessageBoxImage.None);   
-            // Game has ended
-            if (!Game.GameRunning)
-            {
-                MessageBox.Show(endMessage, "Game Over", MessageBoxButton.OK, MessageBoxImage.None);   
-            }
         }
 
         public void SettingsClick(object Sender, RoutedEventArgs e)
@@ -91,7 +93,7 @@ namespace Game
 
         public void RestartClick(object Sender, RoutedEventArgs e)
         {
-            EndTurn();
+            NewTurn();
             InitializeGame(Game.HumanPlayers, Game.AIPolice);
         }
 
@@ -114,12 +116,15 @@ namespace Game
             {
                 setError(ime.Message);
             }
+            NewTurn();
         }
 
         private void CanvasClick(object sender, MouseButtonEventArgs e)
         {
+            
             if (Error.Visibility == System.Windows.Visibility.Visible) Error.Visibility = System.Windows.Visibility.Hidden;
             var clicked = pixelCoordsToBlockCoords(e.GetPosition(BoardCanvas).toGamePoint());
+            BoardCanvas.MarkedSquares.addMarkedSquare(clicked, Color.FromRgb(255, 0, 0));
             // No currently selected tile
             if (Selected == BoardPoint.Error) Selected = Game.pieceExistsAt(clicked) ? clicked : BoardPoint.Error;
             // Clicked same tile, deselect

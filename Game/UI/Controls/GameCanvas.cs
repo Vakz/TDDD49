@@ -70,7 +70,7 @@ namespace Game.UI.Controls
         private Dictionary<Color, List<GamePoint>>  BoardLines;
         private Dictionary<Color, List<GamePoint>>  BoardStations;
 
-        private Dictionary<Color, GamePoint> marked_squares;
+        public SimpleEventDictionary<GamePoint, Color> MarkedSquares = new SimpleEventDictionary<GamePoint,Color>();
         
         private GamePoint _boardSelection = GamePoint.Error;
         public GamePoint                           BoardSelection {
@@ -116,7 +116,7 @@ namespace Game.UI.Controls
             };
 
             clearDrawData();
-
+            MarkedSquares.OnChange += delegate() { System.Console.WriteLine("hej"); this.InvalidateVisual(); };
             BoardSelection = new GamePoint(1, 1);
         }
 
@@ -180,11 +180,16 @@ namespace Game.UI.Controls
                 dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
             }
 
-            // draw selection:
-            if ( BoardSelection != GamePoint.Error ){
-                drawOutline( Color.FromRgb(0xff, 0xff, 0x00), BoardSelection, dc);
+            foreach (KeyValuePair<GamePoint, Color> kvp in MarkedSquares)
+            {
+                drawOutline(kvp.Value, kvp.Key, dc);
             }
-            
+
+            // draw selection:
+            if (BoardSelection != GamePoint.Error)
+            {
+                drawOutline(Color.FromRgb(0xff, 0xff, 0x00), BoardSelection, dc);
+            }
         }
 
         private void drawOutline(Color c, GamePoint p, DrawingContext dc )

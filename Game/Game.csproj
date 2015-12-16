@@ -79,6 +79,7 @@
     <Compile Include="UI\ExtensionMethods.cs" />
     <Compile Include="UI\Controls\GameCanvas.cs" />
     <Compile Include="UI\ImageLoader.cs" />
+    <Compile Include="UI\SimpleEventDictionary.cs" />
     <Compile Include="UI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

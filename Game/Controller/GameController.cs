@@ -74,6 +74,11 @@ namespace Game.Controller
             Game = new BoardController(AIPolice ? nrOfHumans + 1 : nrOfHumans);
         }
 
+        public List<Point> getCurrentPlayerPositions()
+        {
+            return Game.Players[Game.CurrentPlayerIndex].getControlledPieces().Select<Piece, Point>(s => s.Position).ToList();
+        }
+
         /// <summary>
         /// Checks if the specified point contains a player piece
         /// </summary>
