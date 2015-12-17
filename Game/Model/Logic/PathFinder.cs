@@ -22,10 +22,9 @@ namespace Game.Model.Logic
         }
 
         // ärv av denna klass för att skapa en callback-funktion till pathfinder
-        public abstract class CanPass
+        public interface CanPass
         {
-            protected CanPass() { }
-            public abstract bool check(Point position);
+            bool check(Point position);
         }
 
         // hjälpfunktioner:

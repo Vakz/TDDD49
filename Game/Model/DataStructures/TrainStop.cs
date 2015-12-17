@@ -24,5 +24,7 @@ namespace Game.Model.DataStructures
         {
             _lines = new List<int>(lines);
         }
+
+        public List<int> getLines() { return _lines; }
     }
 }

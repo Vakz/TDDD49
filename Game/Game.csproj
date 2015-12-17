@@ -76,6 +76,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\BoardCanvasTranslator.cs" />
     <Compile Include="UI\Controls\TextBlockWithTitle.cs" />
     <Compile Include="UI\ExtensionMethods.cs" />
     <Compile Include="UI\Controls\GameCanvas.cs" />
