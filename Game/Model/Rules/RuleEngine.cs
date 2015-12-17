@@ -153,7 +153,7 @@ namespace Game.Model.Rules
         }
 
         public bool isAllowedToSkipTurn(Piece p) {
-            if (p.Type == PieceType.Thief) return ((Thief)p).ArrestCount > 0;
+            if (p.Type == PieceType.Thief) return ((Thief)p).ArrestTurns > 0;
             if (p.TurnsOnCurrentPosition < 2) return true;
             if (_board[p.Position].Type == BlockType.TravelAgency) return false;
             return !nextToEscape(p.Position);

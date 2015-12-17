@@ -19,7 +19,7 @@ namespace Game.Model.DataStructures
             Money += money;
         }
 
-        public new int rob()
+        public override int rob()
         {
             int temp = Money;
             Money = 0;

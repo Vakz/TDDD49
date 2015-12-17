@@ -18,6 +18,8 @@ using BoardPoint = Game.Model.DataStructures.Point;
 
 namespace Game
 {
+    // TODO: Police can stop in bank/telegraph
+
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -45,16 +47,7 @@ namespace Game
         {
             InitializeComponent();
             InitializeGame(2, true);
-            /*
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Special, new BoardPoint(6, 2));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(6, 1));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(5, 1));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(4, 1));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(3, 1));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(2, 1));
-            BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(1, 1));
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
-             */
             boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
             Skip.Click += SkipClick;
             SettingsButton.Click += SettingsClick;
@@ -116,7 +109,7 @@ namespace Game
 
         private void InitializeGame(int nrOfHumans, bool AIPolice)
         {
-            Game = new GameController(nrOfHumans, AIPolice);
+            Game = new GameController();
             Selected = BoardPoint.Error;
             Dice.Data = Game.DiceRoll.ToString();
         }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Game.Model;
 
-namespace Game.Controller
+namespace Game.Model.DataStructures
 {
     public class GameState
     {

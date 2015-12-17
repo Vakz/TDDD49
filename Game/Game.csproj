@@ -69,13 +69,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\DataStructures\GameState.cs" />
+    <Compile Include="State\GameState.cs" />
     <Compile Include="Exceptions\IllegalMoveException.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="State\Loader.cs" />
+    <Compile Include="State\Player.cs" />
     <Compile Include="UI\BoardCanvasTranslator.cs" />
     <Compile Include="UI\Controls\TextBlockWithTitle.cs" />
     <Compile Include="UI\ExtensionMethods.cs" />
@@ -182,9 +184,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Storage\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Save.sample.xml" />
   </ItemGroup>

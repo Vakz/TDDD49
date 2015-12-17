@@ -9,6 +9,7 @@ using Game.Model.Rules;
 using Game.Model;
 using System.IO;
 using Game.Exceptions;
+using Game.State;
 
 namespace Game.Controller
 {
@@ -21,12 +22,25 @@ namespace Game.Controller
         
 
         public GameState State { get; set; }
-        
 
-        public BoardController(int nrOfPlayers) {
+        public BoardController()
+        {
+            State = Loader.Load();
+            if (State == null) newGame(2);
+            ruleEngine = new RuleEngine(State.Board);
+            logicEngine = new LogicEngine(State.Board);
+        }
+
+        public BoardController(int nrOfPlayers)
+        {
+            newGame(nrOfPlayers);
+        }
+
+        private void newGame(int nrOfPlayers)
+        {
             State = new GameState();
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
-            State.Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
+            State.Board = Loader.LoadBoard();
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
             ruleEngine = new RuleEngine(State.Board);

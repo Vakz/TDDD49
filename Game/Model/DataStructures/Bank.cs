@@ -13,7 +13,7 @@ namespace Game.Model.DataStructures
             get {
                 return _money;
             }
-            protected set
+            set
             {
                 if (value < 0) throw new ArgumentException("Must have positive amount of monies");
                 _money = value;
@@ -24,7 +24,7 @@ namespace Game.Model.DataStructures
             Money = money;
         }
 
-        public int rob() {
+        public virtual int rob() {
             return Money;
         }
     }

@@ -9,8 +9,8 @@ namespace Game.Model
 {
     public class ThiefPlayer : IPlayer
     {
-        public Thief Piece { get; private set; }
-        public int ID { get; protected set; }
+        public Thief Piece { get; set; }
+        public int ID { get; set; }
 
         public int Money
         {

@@ -10,7 +10,7 @@ namespace Game.Model
 {
     public class PolicePlayer : IPlayer
     {
-        List<Piece> _pieces = new List<Piece>();
+        public List<Piece> Pieces { get; set; }
         public int Money { get; set; }
         public int ID { get; protected set; }
 
@@ -19,18 +19,19 @@ namespace Game.Model
         {
             get
             {
-                return _pieces.First(s => s.Position == pt).Active;
+                return Pieces.First(s => s.Position == pt).Active;
             }
             set
             {
-                _pieces.First(s => s.Position == pt).Active = value;
+                Pieces.First(s => s.Position == pt).Active = value;
             }
         }
 
         public PolicePlayer(int id, List<Point> policeSpawnpoints)
         {
+            Pieces = new List<Piece>();
             foreach (Point pt in policeSpawnpoints) {
-                _pieces.Add(new Piece(++id, pt));
+                Pieces.Add(new Piece(++id, pt));
             }
         }
 
@@ -41,7 +42,7 @@ namespace Game.Model
 
         public List<Piece> getControlledPieces()
         {
-            return _pieces;
+            return Pieces;
         }
 
         public bool anyInPlay()

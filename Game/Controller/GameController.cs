@@ -93,10 +93,15 @@ namespace Game.Controller
         /// </summary>
         /// <param name="nrOfHumans">The number of human players</param>
         /// <param name="AIPolice">Should Police be AI-controlled?</param>
-        public GameController(int nrOfHumans, bool AIPolice)
+        public void newGame(int nrOfHumans, bool AIPolice)
         {
             Game = new BoardController(AIPolice ? nrOfHumans + 1 : nrOfHumans);
             Game.State.AIPolice = AIPolice;
+        }
+
+        public GameController()
+        {
+            Game = new BoardController();
         }
 
         public List<Point> getCurrentPlayerPositions()
