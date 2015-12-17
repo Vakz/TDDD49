@@ -67,14 +67,24 @@ namespace Game.Controller
         {
             get
             {
-                return AIPolice ? Game.State.Players.Count - 1 : Game.State.Players.Count;
+                return Game.State.AIPolice ? Game.State.Players.Count - 1 : Game.State.Players.Count;
             }
         }
 
-        public bool AIPolice { get; private set; }
+        public bool AIPolice
+        {
+            get
+            {
+                return Game.State.AIPolice;
+            }
+            set
+            {
+                Game.State.AIPolice = value;
+            }
+        }
 
         private bool isAITurn() {
-            return Game.isPoliceTurn && AIPolice;
+            return Game.isPoliceTurn && Game.State.AIPolice;
         }
 
         /// <summary>
@@ -85,8 +95,8 @@ namespace Game.Controller
         /// <param name="AIPolice">Should Police be AI-controlled?</param>
         public GameController(int nrOfHumans, bool AIPolice)
         {
-            this.AIPolice = AIPolice;
             Game = new BoardController(AIPolice ? nrOfHumans + 1 : nrOfHumans);
+            Game.State.AIPolice = AIPolice;
         }
 
         public List<Point> getCurrentPlayerPositions()

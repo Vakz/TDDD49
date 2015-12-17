@@ -9,6 +9,9 @@ namespace Game.Controller
 {
     public class GameState
     {
+        /// <summary>
+        /// A list of all the players in the game. The police player can be expected to be the last element.
+        /// </summary>
         public List<IPlayer> Players
         {
             get
@@ -28,6 +31,8 @@ namespace Game.Controller
         public int CurrentPlayerDiceRoll { get; set; }
 
         public int CurrentPlayerIndex { get; set; }
+
+        public bool AIPolice { get; set; }
 
         public bool GameRunning { get; set; }
 
