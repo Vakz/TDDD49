@@ -63,7 +63,7 @@ namespace Game.Model.Rules
                 this.rule_engine = rule_engine;
                 this.board = board;
             }
-            public override bool check(Point pt){
+            public bool check(Point pt){
                 return (piece.Type == PieceType.Police && board[pt].Type == BlockType.Bank) || rule_engine.isAllowedOn(pt, piece);
             }
         }

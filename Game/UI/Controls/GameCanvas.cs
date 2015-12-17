@@ -21,7 +21,6 @@ namespace Game.UI.Controls
             Blocked,
             Special
         }
-
         public enum PieceType {
             Thief,
             Police
@@ -32,7 +31,7 @@ namespace Game.UI.Controls
             public LinePathPassCheck( Dictionary<GamePoint, BlockType> blocks ){
                 this.blocks = blocks;
             }
-            public override bool check(GamePoint position)
+            public bool check(GamePoint position)
             {
                 return blocks[position] == BlockType.Path; 
             }
@@ -50,8 +49,13 @@ namespace Game.UI.Controls
             BoardLines[c] = new List<GamePoint>();
             //TODO: kalla på pathfinding för att lägga till BoardLines
 
-
             this.InvalidateVisual();
+        }
+
+        public void addText(string s, GamePoint p)
+        {
+            BoardText[p] = s;
+            InvalidateVisual();
         }
 
         public void setPieces(Dictionary<GamePoint, PieceType> pieces)
@@ -60,20 +64,21 @@ namespace Game.UI.Controls
             this.InvalidateVisual();
         }
 
+        private PathFinder path_finder;
         public void setPathFinder( int width, int height )
         {
             path_finder = new PathFinder( width, height );
         }
 
+        private Dictionary<GamePoint, string>       BoardText;
         private Dictionary<GamePoint, BlockType>    BoardBlocks;
         private Dictionary<GamePoint, PieceType>    BoardPieces;
         private Dictionary<Color, List<GamePoint>>  BoardLines;
         private Dictionary<Color, List<GamePoint>>  BoardStations;
-
-        public SimpleEventDictionary<GamePoint, Color> MarkedSquares = new SimpleEventDictionary<GamePoint,Color>();
+        public SimpleEventDictionary<GamePoint, Color> MarkedSquares;
         
-        private GamePoint _boardSelection = GamePoint.Error;
-        public GamePoint                           BoardSelection {
+        private GamePoint _boardSelection;
+        public GamePoint BoardSelection {
             set {
                 _boardSelection = value;
                 this.InvalidateVisual();
@@ -83,20 +88,19 @@ namespace Game.UI.Controls
             }
         }
 
-        private PathFinder path_finder;
-
         public void clearDrawData(){
-            //private BlockType[,]                       
+            BoardText      = new Dictionary<GamePoint, string>();
             BoardBlocks    = new Dictionary<GamePoint,BlockType>();
             BoardPieces    = new Dictionary<GamePoint,PieceType>();
             BoardLines     = new Dictionary<Color,List<GamePoint>>();
             BoardStations  = new Dictionary<Color, List<GamePoint>>();
+            MarkedSquares  = new SimpleEventDictionary<GamePoint,Color>();
             
             BoardSelection = GamePoint.Error;
         }
 
-        Dictionary<BlockType,ImageSource> BlockBitmaps;// = new Dictionary<BlockType,ImageSource>();
-        Dictionary<PieceType,ImageSource> PieceBitmaps;// = new Dictionary<PieceType,ImageSource>();
+        Dictionary<BlockType,ImageSource> BlockBitmaps;
+        Dictionary<PieceType,ImageSource> PieceBitmaps;
 
         public GameCanvas()
         {
@@ -117,7 +121,6 @@ namespace Game.UI.Controls
 
             clearDrawData();
             MarkedSquares.OnChange += delegate() { this.InvalidateVisual(); };
-            BoardSelection = new GamePoint(1, 1);
         }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
@@ -131,22 +134,7 @@ namespace Game.UI.Controls
                 BlockType bt = BoardBlocks[p];
                 dc.DrawImage(BlockBitmaps[bt], new Rect(p.X*_tileSize, p.Y*_tileSize, _tileSize, _tileSize));
 
-                // draw black outline:
-                Brush outline_brush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
-                Pen outline_pen = new Pen(outline_brush, 0.5);
-
-                Point start = new Point(p.X * _tileSize, p.Y * _tileSize);
-                Point[] points = new Point[]{
-                    new Point( start.X, start.Y ),
-                    new Point( start.X+_tileSize, start.Y ),
-                    new Point( start.X+_tileSize, start.Y+_tileSize ),
-                    new Point( start.X, start.Y+_tileSize )
-                };
-
-                for (int i = 0; i < points.Length; i++)
-                {
-                    dc.DrawLine(outline_pen, points[i], points[(i + 1) % points.Length]);
-                }
+                drawOutline(Color.FromRgb(0x00, 0x00, 0x00),p,dc);
             }
 
             // draw lines:
@@ -180,6 +168,7 @@ namespace Game.UI.Controls
                 dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
             }
 
+            // draw marked squares:
             foreach (KeyValuePair<GamePoint, Color> kvp in MarkedSquares)
             {
                 drawOutline(kvp.Value, kvp.Key, dc);
@@ -189,6 +178,18 @@ namespace Game.UI.Controls
             if (BoardSelection != GamePoint.Error)
             {
                 drawOutline(Color.FromRgb(0xff, 0xff, 0x00), BoardSelection, dc);
+            }
+
+            // draw text:
+            foreach (GamePoint p in BoardText.Keys){
+                Brush b = new SolidColorBrush( Color.FromRgb(0xff, 0xff, 0x00) );
+                System.Globalization.CultureInfo cinf = new System.Globalization.CultureInfo(0x0409);
+                Typeface tf = new Typeface("Verdana");
+                double size = 10.0;
+                FormattedText ftext = new FormattedText( BoardText[p], cinf, FlowDirection.LeftToRight, tf, size, b);
+                Point text_centerpos = new Point( TileSize*(p.X+0.5), TileSize*(p.Y+0.5) );
+                Point draw_origin = new Point( text_centerpos.X-ftext.Width/2, text_centerpos.Y-ftext.Height/2 );
+                dc.DrawText( ftext, draw_origin );
             }
         }
 
@@ -210,8 +211,6 @@ namespace Game.UI.Controls
             {
                 dc.DrawLine(selection_pen, points[i], points[(i + 1) % points.Length]);
             }
-        
-        
         }
 
         private int _tileSize = 30;
