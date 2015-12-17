@@ -12,9 +12,9 @@ namespace Game.Controller
     {
         private BoardController Game { get; set; }
 
-        public Board getBoard()
+        public Board Board
         {
-            return Game.Board;
+            get { return Game.State.Board; }
         }
 
         public int Width
