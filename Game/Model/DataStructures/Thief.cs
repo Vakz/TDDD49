@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    class Thief : Piece
+    public class Thief : Piece
     {
         public int Money { get; set; }
 
@@ -14,7 +14,8 @@ namespace Game.Model.DataStructures
         public int ArrestTurns { get; set; }
         public int ArrestCount { get; set; }
 
-        public Thief(Point p) : base(p)
+
+        public Thief(int id, Point p) : base(id, p)
         {
             Type = PieceType.Thief;
         }
@@ -30,20 +31,20 @@ namespace Game.Model.DataStructures
             return temp;
         }
 
-        private Dictionary<Point, int> _hiddenMoney = new Dictionary<Point,int>();
+        public Dictionary<Point, int> HiddenMoney { get; set; }
 
         public void hideMoney()
         {
-            if (!_hiddenMoney.ContainsKey(Position)) _hiddenMoney[Position] = 0;
-            _hiddenMoney[Position] += Money;
+            if (!HiddenMoney.ContainsKey(Position)) HiddenMoney[Position] = 0;
+            HiddenMoney[Position] += Money;
             Money = 0;
         }
 
         public void fetchHiddenMoney() {
-            if (_hiddenMoney.ContainsKey(Position))
+            if (HiddenMoney.ContainsKey(Position))
             {
-                Money += _hiddenMoney[Position];
-                _hiddenMoney[Position] = 0;
+                Money += HiddenMoney[Position];
+                HiddenMoney[Position] = 0;
             }
         }
     }

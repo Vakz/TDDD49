@@ -8,10 +8,11 @@ using System.Collections.ObjectModel;
 
 namespace Game.Model
 {
-    class PolicePlayer : IPlayer
+    public class PolicePlayer : IPlayer
     {
         List<Piece> _pieces = new List<Piece>();
         public int Money { get; set; }
+        public int ID { get; protected set; }
 
         // Set whether a police piece is active or not
         public bool this[Point pt]
@@ -26,10 +27,10 @@ namespace Game.Model
             }
         }
 
-        public PolicePlayer(List<Point> policeSpawnpoints)
+        public PolicePlayer(int id, List<Point> policeSpawnpoints)
         {
             foreach (Point pt in policeSpawnpoints) {
-                _pieces.Add(new Piece(pt));
+                _pieces.Add(new Piece(++id, pt));
             }
         }
 

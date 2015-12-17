@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GameController AIPolice="True" HumanPlayers="1">
+  <AIPolice>True</AIPolice>
+  <HumanPlayers>1</HumanPlayers>
+  <GameState>
+    <Players>
+      <ThiefPlayers>
+        <ThiefPlayer ID="0">
+          <Piece>
+            <Position X="1" Y="1" />
+            <Alive>True</Alive>
+            <TurnsOnCurrentPosition>0</TurnsOnCurrentPosition>
+            <TrainMovementStreak>0</TrainMovementStreak>
+            <Arrestable>False</Arrestable>
+            <Money>1000</Money>
+            <ArrestTurns>0</ArrestTurns>
+            <ArrestCount>1</ArrestCount>
+            <HiddenMoney>
+              <Hidden Amount="2000">
+                <Point X="6" Y="2" />
+              </Hidden>
+            </HiddenMoney>
+          </Piece> 
+        </ThiefPlayer>
+      </ThiefPlayers>
+      <PolicePlayer ID="1" Money="2000">
+        <Pieces>
+          <Piece ID="1">
+            <Position X="2" Y="1"></Position>
+            <Alive>True</Alive>
+            <TurnsOnCurrentPosition>1</TurnsOnCurrentPosition>
+            <TrainMovementStreak>0</TrainMovementStreak>
+          </Piece>
+          <Piece ID="2">
+            <Position X="2" Y="1"></Position>
+            <Alive>True</Alive>
+            <TurnsOnCurrentPosition>1</TurnsOnCurrentPosition>
+            <TrainMovementStreak>0</TrainMovementStreak>
+          </Piece>
+        </Pieces>
+      </PolicePlayer>
+    </Players>
+    <CurrentDiceRoll>3</CurrentDiceRoll>
+    <GameRunning>True</GameRunning>
+    <CurrentPlayerIndex>0</CurrentPlayerIndex>
+    <TravelAgency Money="2000" />
+  </GameState>
+</GameController>

@@ -14,28 +14,37 @@ namespace Game.Controller
 {
     class BoardController
     {
-        public Board Board {get; private set;}
-        public List<IPlayer> Players { get; private set; } // Used to keep track of current player
-        private List<ThiefPlayer> thiefPlayers = new List<ThiefPlayer>();
-        private PolicePlayer policePlayer;
-        private int aliveThiefPlayers = 0;
-        public int CurrentPlayerDiceRoll { get; private set; }
+        
+        
         private RuleEngine ruleEngine;
         private LogicEngine logicEngine;
-        public bool GameRunning { get; set; }
-        public int CurrentPlayerIndex { get; private set; }
+        
+
+        public GameState State { get; set; }
+        
 
         public BoardController(int nrOfPlayers) {
+            State = new GameState();
             if (nrOfPlayers < 2) throw new ArgumentException("Must have at least two players");
-            Players = new List<IPlayer>();
-            Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
+            State.Board = BoardReader.readBoard( Directory.GetCurrentDirectory()+"\\Resources\\board.txt" );
             addThiefPlayers(nrOfPlayers - 1);
             addPolicePlayer(nrOfPlayers);
-            ruleEngine = new RuleEngine(Board);
-            logicEngine = new LogicEngine(Board);
-            CurrentPlayerDiceRoll = LogicEngine.diceRoll(); // Initial player roll
-            CurrentPlayerIndex = Players.Count - 1;
-            GameRunning = true;
+            ruleEngine = new RuleEngine(State.Board);
+            logicEngine = new LogicEngine(State.Board);
+            State.CurrentPlayerDiceRoll = LogicEngine.diceRoll(); // Initial player roll
+            State.CurrentPlayerIndex = State.Players.Count - 1;
+        }
+
+        public IPlayer CurrentPlayer {
+            get { return State.Players[State.CurrentPlayerIndex]; }
+        }
+
+        public bool isPoliceTurn
+        {
+            get
+            {
+                return CurrentPlayer.getControlledPieces()[0].Type == PieceType.Police;
+            }
         }
 
         /// <summary>
@@ -48,11 +57,9 @@ namespace Game.Controller
             {
                 for (int i = 0; i < nrOfPlayers; ++i)
                 {
-                    ThiefPlayer tp = new ThiefPlayer(Board.getUnoccupiedByBlockType(BlockType.Hideout));
-                    thiefPlayers.Add(tp);
-                    Board.addPiece(tp.Piece);
-                    Players.Add(tp);
-                    aliveThiefPlayers++;
+                    ThiefPlayer tp = new ThiefPlayer(i, State.Board.getUnoccupiedByBlockType(BlockType.Hideout));
+                    State.ThiefPlayers.Add(tp);
+                    State.Board.addPiece(tp.Piece);
                 }
                 // One more police pieces than thieves
             }
@@ -71,18 +78,17 @@ namespace Game.Controller
             List<Point> spawnpoints = new List<Point>();
             for (int i = 0; i < nrOfPolice; ++i)
             {
-                spawnpoints.Add(Board.getUnoccupiedByBlockType(BlockType.PoliceStation));
+                spawnpoints.Add(State.Board.getUnoccupiedByBlockType(BlockType.PoliceStation));
             }
-            policePlayer = new PolicePlayer(spawnpoints);
-            Players.Add(policePlayer);
-            Board.addPiece(policePlayer.getControlledPieces());
+            State.PolicePlayer = new PolicePlayer(State.Players.Count, spawnpoints);
+            State.Board.addPiece(State.PolicePlayer.getControlledPieces());
         }
 
         public int EscapedThiefMoney {
             get
             {
                 int sum = 0;
-                foreach (ThiefPlayer t in thiefPlayers)
+                foreach (ThiefPlayer t in State.ThiefPlayers)
                 {
                     if (!t.Piece.Alive)
                     {
@@ -97,13 +103,13 @@ namespace Game.Controller
         {
             get
             {
-                return policePlayer.Money;
+                return State.PolicePlayer.Money;
             }
         }
 
         public bool move(Point src, Point dest)
         {
-            Piece p = Board.getPieceAt(src);
+            Piece p = State.Board.getPieceAt(src);
             return movePiece(p, dest);
         }
 
@@ -114,13 +120,13 @@ namespace Game.Controller
         /// <param name="pt">Destination</param>
         /// <returns>True if move was successful</returns>
         public bool movePiece(Piece p, Point pt) {
-            if (!GameRunning) throw new ApplicationException("Game is not running!");
-            if (!Players[CurrentPlayerIndex].allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
-            else if (!ruleEngine.canMoveTo(p, pt, CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
+            if (!State.GameRunning) throw new ApplicationException("Game is not running!");
+            if (!CurrentPlayer.allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
+            else if (!ruleEngine.canMoveTo(p, pt, State.CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
             else if (ruleEngine.canArrestAt(p, pt))
             {
-                Thief arrestTarget = (Thief)Board.getPieceAt(pt);
-                policePlayer.Money += ruleEngine.arrest(arrestTarget, p);
+                Thief arrestTarget = (Thief)State.Board.getPieceAt(pt);
+                State.PolicePlayer.Money += ruleEngine.arrest(arrestTarget, p);
                 if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
                 {
                     ruleEngine.removePieceFromGame(p);
@@ -130,6 +136,7 @@ namespace Game.Controller
             else
             {
                 if (movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
+                else p.TrainMovementStreak = 0;
                 p.Position = pt;
                 if (p.Type == PieceType.Thief) attemptToRobPos((Thief)p, pt);
             }
@@ -139,15 +146,16 @@ namespace Game.Controller
         }
 
         private void attemptToRobPos(Thief t, Point pt) {
-            if (logicEngine.isRobableBlock(Board[pt]))
+            Block b = State.Board[pt];
+            if (logicEngine.isRobableBlock(State.Board[pt]))
             {
-                if (Board[pt].Type == BlockType.Bank)
+                if (b.Type == BlockType.Bank)
                 {
-                    ruleEngine.robBank(t, (Bank)Board[pt]);
+                    ruleEngine.robBank(t, (Bank)b);
                 }
-                else if (Board[pt].Type == BlockType.TravelAgency && ((TravelAgency)Board[pt]).Money > 0)
+                else if (b.Type == BlockType.TravelAgency && ((TravelAgency)b).Money > 0)
                 {
-                    ruleEngine.robBank(t, (TravelAgency)Board[pt]);
+                    ruleEngine.robBank(t, (TravelAgency)b);
                 }
                 t.Arrestable = true;
             }
@@ -160,10 +168,9 @@ namespace Game.Controller
         /// <returns>True if skip was allowed and turn ended</returns>
         public void skipTurn()
         {
-            if (!GameRunning) throw new ApplicationException("Game is not running!");
-            IPlayer p = Players[CurrentPlayerIndex];
-            if (!p.getControlledPieces().TrueForAll(ruleEngine.isAllowedToSkipTurn)) throw new IllegalMoveException("Player is not allowed to skip this turn");
-            p.getControlledPieces().ForEach(s => s.TurnsOnCurrentPosition++);
+            if (!State.GameRunning) throw new ApplicationException("Game is not running!");;
+            if (!CurrentPlayer.getControlledPieces().TrueForAll(ruleEngine.isAllowedToSkipTurn)) throw new IllegalMoveException("Player is not allowed to skip this turn");
+            CurrentPlayer.getControlledPieces().ForEach(s => s.TurnsOnCurrentPosition++);
             endTurn();
         }
 
@@ -175,7 +182,7 @@ namespace Game.Controller
         /// <returns>True if move was made by train, else returns false</returns>
         private bool movedByTrain(Point origin, Point dest)
         {
-            return Board[origin].Type == BlockType.TrainStop && Board[dest].Type == BlockType.TrainStop;
+            return State.Board[origin].Type == BlockType.TrainStop && State.Board[dest].Type == BlockType.TrainStop;
         }
 
         /// <summary>
@@ -183,11 +190,13 @@ namespace Game.Controller
         /// </summary>
         public void endTurn()
         {
+            // TODO: Check if any thieves are surrounded
+
             // When police turn ends, check if any thief is attempting to escape
             // All players have at least one piece, so using index 0 is safe.
-            if (Players[CurrentPlayerIndex].getControlledPieces()[0].Type == PieceType.Police)
+            if (isPoliceTurn)
             {
-                List<ThiefPlayer> escaping = thiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
+                List<ThiefPlayer> escaping = State.ThiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
                 foreach(ThiefPlayer tp in escaping)
                 {
                     ruleEngine.removePieceFromGame(tp.Piece);
@@ -195,11 +204,11 @@ namespace Game.Controller
             }
             // At end of thief turn, check if arrested and potentially release
             else {
-                decrementArrestTime(thiefPlayers[CurrentPlayerIndex].Piece);
+                decrementArrestTime(State.ThiefPlayers[State.CurrentPlayerIndex].Piece);
             }
             nextPlayer();
             // If all thieves arrested or no thief pieces on the board, end the game
-            GameRunning = thiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
+            State.GameRunning = State.ThiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
         }
 
         private void decrementArrestTime(Thief t) {
@@ -213,16 +222,16 @@ namespace Game.Controller
         {
             if (LogicEngine.diceRoll() == 6)
             {
-                ruleEngine.release(thiefPlayers[CurrentPlayerIndex].Piece);
-                thiefPlayers[CurrentPlayerIndex].Piece.Arrestable = true;
+                ruleEngine.release(State.ThiefPlayers[State.CurrentPlayerIndex].Piece);
+                State.ThiefPlayers[State.CurrentPlayerIndex].Piece.Arrestable = true;
             }
         }
 
         public void nextPlayer()
         {
-            CurrentPlayerIndex = (CurrentPlayerIndex+1) % Players.Count;
-            if (!Players[CurrentPlayerIndex].anyInPlay()) nextPlayer(); // Will cause multiple die rolls
-            CurrentPlayerDiceRoll = LogicEngine.diceRoll();
+            State.CurrentPlayerIndex = (State.CurrentPlayerIndex+1) % State.Players.Count;
+            if (!State.Players[State.CurrentPlayerIndex].anyInPlay()) nextPlayer(); // Will cause multiple die rolls
+            State.CurrentPlayerDiceRoll = LogicEngine.diceRoll();
         }
     }
 }

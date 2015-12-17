@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Game.Model.DataStructures;
 
-namespace Game.Model.DataStructures
+namespace Game.Model.Logic
 {
     static class BoardReader
     {

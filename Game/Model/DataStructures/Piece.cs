@@ -8,7 +8,7 @@ namespace Game.Model.DataStructures
 {
     public class Piece
     {
-        public PieceType Type { get; protected set; }
+        public PieceType Type { get; set; }
        
         public Point Position { get; set; }
 
@@ -20,19 +20,22 @@ namespace Game.Model.DataStructures
 
         public int TrainMovementStreak { get; set; }
 
-        public Piece(Point p)
+        public int ID { get; set; }
+
+        public Piece(int id, Point p)
         {
             Type = PieceType.Police;
             Position = p;
             Active = true;
             Alive = true;
+            ID = id;
         }
 
         public static Piece Error
         {
             get
             {
-                return new Piece(Point.Error);
+                return new Piece(int.MaxValue, Point.Error);
             }
         }
     }

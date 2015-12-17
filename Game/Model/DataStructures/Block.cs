@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    class Block
+    public class Block
     {
         private BlockType _type;
         public BlockType Type {
@@ -24,7 +24,7 @@ namespace Game.Model.DataStructures
         }
     }
 }
-enum BlockType {
+public enum BlockType {
     Blocked = 0,
     Normal = 1,
     Bank = 2,

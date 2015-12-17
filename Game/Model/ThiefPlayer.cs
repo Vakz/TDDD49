@@ -7,9 +7,10 @@ using Game.Model.DataStructures;
 
 namespace Game.Model
 {
-    class ThiefPlayer : IPlayer
+    public class ThiefPlayer : IPlayer
     {
         public Thief Piece { get; private set; }
+        public int ID { get; protected set; }
 
         public int Money
         {
@@ -19,9 +20,10 @@ namespace Game.Model
             }
         }
 
-        public ThiefPlayer(Point startingPosition)
+        public ThiefPlayer(int id, Point startingPosition)
         {
-            Piece = new Thief(startingPosition);
+            ID = id;
+            Piece = new Thief(id, startingPosition);
         }
 
         public bool allowedToMovePiece(Piece p)

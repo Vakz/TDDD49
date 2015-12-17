@@ -16,7 +16,7 @@ namespace Game.Controller
         {
             get
             {
-                return Game.Board.Width;
+                return Game.State.Board.Width;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Game.Controller
         {
             get
             {
-                return Game.GameRunning;
+                return Game.State.GameRunning;
             }
         }
 
@@ -48,23 +48,28 @@ namespace Game.Controller
         {
             get
             {
-                return Game.Board.Height;
+                return Game.State.Board.Height;
             }
         }
 
         public int? PlayerMoneyAtPoint(Point pt)
         {
             if (!pieceExistsAt(pt)) return null;
-            return Game.Players[Game.CurrentPlayerIndex].Money;
+            return Game.CurrentPlayer.Money;
+        }
+
+        public int HumanPlayers
+        {
+            get
+            {
+                return AIPolice ? Game.State.Players.Count - 1 : Game.State.Players.Count;
+            }
         }
 
         public bool AIPolice { get; private set; }
-        public int HumanPlayers { get; set; }
 
         private bool isAITurn() {
-            if (Game.CurrentPlayerIndex == Game.Players.Count - 1 && AIPolice) return true;
-            if (Game.CurrentPlayerIndex > HumanPlayers - 1) return true;
-            return false;
+            return Game.isPoliceTurn && AIPolice;
         }
 
         /// <summary>
@@ -75,14 +80,13 @@ namespace Game.Controller
         /// <param name="AIPolice">Should Police be AI-controlled?</param>
         public GameController(int nrOfHumans, bool AIPolice)
         {
-            HumanPlayers = nrOfHumans;
             this.AIPolice = AIPolice;
             Game = new BoardController(AIPolice ? nrOfHumans + 1 : nrOfHumans);
         }
 
         public List<Point> getCurrentPlayerPositions()
         {
-            return Game.Players[Game.CurrentPlayerIndex].getControlledPieces().Select<Piece, Point>(s => s.Position).ToList();
+            return Game.CurrentPlayer.getControlledPieces().Select<Piece, Point>(s => s.Position).ToList();
         }
 
         /// <summary>
@@ -92,7 +96,7 @@ namespace Game.Controller
         /// <returns>True if any piece at pt</returns>
         public bool pieceExistsAt(Point pt)
         {
-            return Game.Board.getPieceAt(pt) != null;
+            return Game.State.Board.getPieceAt(pt) != null;
         }
 
         /// <summary>
@@ -112,7 +116,7 @@ namespace Game.Controller
         /// <returns>IReadOnlyCollection containing all game pieces</returns>
         public IReadOnlyCollection<Piece> getAllPieces()
         {
-            return Game.Board.Pieces;
+            return Game.State.Board.Pieces;
         }
 
         /// <summary>
@@ -126,7 +130,7 @@ namespace Game.Controller
         {
             get
             {
-                return Game.CurrentPlayerDiceRoll;
+                return Game.State.CurrentPlayerDiceRoll;
             }
         }
     }

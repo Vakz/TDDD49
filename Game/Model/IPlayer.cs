@@ -13,6 +13,8 @@ namespace Game.Model
 
         int Money { get; }
 
+        int ID { get; }
+
         /// <summary>
         /// Used to make sure the piece a player is attempting to move is actually
         /// a piece they are allowed to move. For a police player, ensures the piece

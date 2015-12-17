@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model.DataStructures
 {
-    class Board
+    public class Board
     {
         private Block[,] _board;
         private List<Piece> _pieces;

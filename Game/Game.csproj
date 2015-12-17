@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\DataStructures\GameState.cs" />
     <Compile Include="Exceptions\IllegalMoveException.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -106,7 +107,7 @@
     <Compile Include="Model\DataStructures\Bank.cs" />
     <Compile Include="Model\DataStructures\Block.cs" />
     <Compile Include="Model\DataStructures\Board.cs" />
-    <Compile Include="Model\DataStructures\BoardReader.cs" />
+    <Compile Include="Model\Logic\BoardReader.cs" />
     <Compile Include="Model\DataStructures\Escape.cs" />
     <Compile Include="Model\DataStructures\Point.cs" />
     <Compile Include="Model\DataStructures\Piece.cs" />
@@ -115,7 +116,7 @@
     <Compile Include="Model\DataStructures\Thief.cs" />
     <Compile Include="Model\Logic\LogicEngine.cs" />
     <Compile Include="Model\Logic\PathFinder.cs" />
-    <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\IPlayer.cs" />
     <Compile Include="Model\PolicePlayer.cs" />
     <Compile Include="Model\Rules\RuleEngine.cs" />
     <Compile Include="Model\ThiefPlayer.cs" />
@@ -179,6 +180,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Storage\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Save.sample.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
