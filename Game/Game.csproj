@@ -158,7 +158,7 @@
     <Resource Include="Resources\special.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\thief.png">
+    <Resource Include="Resources\thief2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\trumpman.jpg">
@@ -187,6 +187,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Save.sample.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\thief.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

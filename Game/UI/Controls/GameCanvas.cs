@@ -33,6 +33,7 @@ namespace Game.UI.Controls
             }
             public bool check(GamePoint position)
             {
+                if (!blocks.ContainsKey(position)) throw new ArgumentOutOfRangeException("invalid index");
                 return blocks[position] == BlockType.Path; 
             }
         }
@@ -143,22 +144,23 @@ namespace Game.UI.Controls
 
             // draw lines:
             foreach ( Color c in BoardLines.Keys ){
-                Brush brush = new SolidColorBrush( c );
-                Pen   pen   = new Pen( brush, 1.5 );
+                Color transparent = Color.FromArgb(0x40, c.R, c.G, c.B);
+                Brush brush = new SolidColorBrush( transparent );
+                Pen   pen   = new Pen( brush, _tileSize/2 );
 
                 foreach (List<GamePoint> line in BoardLines[c]){
-                    for (int i = 1; i < BoardLines[c].Count; i++){
+                    for (int i = 1; i < line.Count; i++){
                         Point a = new Point(_tileSize * line[i - 1].X + _tileSize / 2, _tileSize * line[i - 1].Y + _tileSize / 2);
                         Point b = new Point(_tileSize * line[i].X + _tileSize / 2, _tileSize * line[i].Y + _tileSize / 2);
                         dc.DrawLine(pen, a, b);
                     }
                 }
-
             }
 
             // draw stations:
             foreach (Color c in BoardStations.Keys){
-                Brush brush = new SolidColorBrush(c);
+                Color transparent = Color.FromArgb(0x80, c.R, c.G, c.B);
+                Brush brush = new SolidColorBrush(transparent);
                 Pen pen = new Pen(brush, 1.0);
 
                 foreach ( GamePoint p in BoardStations[c] ){
@@ -187,13 +189,23 @@ namespace Game.UI.Controls
 
             // draw text:
             foreach (GamePoint p in BoardText.Keys){
-                Brush b = new SolidColorBrush( Color.FromRgb(0xff, 0xff, 0x00) );
+                Brush back = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                Brush b = new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0x00));
+
                 System.Globalization.CultureInfo cinf = new System.Globalization.CultureInfo(0x0409);
                 Typeface tf = new Typeface("Verdana");
-                double size = 10.0;
-                FormattedText ftext = new FormattedText( BoardText[p], cinf, FlowDirection.LeftToRight, tf, size, b);
+                double size = 12.0;
+                FormattedText btext = new FormattedText(BoardText[p], cinf, FlowDirection.LeftToRight, tf, size, back);
+                FormattedText ftext = new FormattedText(BoardText[p], cinf, FlowDirection.LeftToRight, tf, size, b);
                 Point text_centerpos = new Point( TileSize*(p.X+0.5), TileSize*(p.Y+0.5) );
                 Point draw_origin = new Point( text_centerpos.X-ftext.Width/2, text_centerpos.Y-ftext.Height/2 );
+
+                int text_border = 1;
+                dc.DrawText(btext, new Point(draw_origin.X + text_border, draw_origin.Y + text_border));
+                dc.DrawText(btext, new Point(draw_origin.X + text_border, draw_origin.Y - text_border));
+                dc.DrawText(btext, new Point(draw_origin.X - text_border, draw_origin.Y + text_border));
+                dc.DrawText(btext, new Point(draw_origin.X - text_border, draw_origin.Y - text_border));
+
                 dc.DrawText( ftext, draw_origin );
             }
         }

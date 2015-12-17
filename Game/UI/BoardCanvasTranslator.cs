@@ -51,10 +51,7 @@ namespace Game.UI
                 Color.FromRgb( 0xff, 0x00, 0x00 ),  //red
                 Color.FromRgb( 0xff, 0xff, 0x00 ),  //yellow
                 Color.FromRgb( 0x00, 0xff, 0x00 ),  //green
-                Color.FromRgb( 0x00, 0x00, 0xff ),  //blue
-
-                Color.FromRgb( 0x90, 0x00, 0x90 ), //purple?
-                Color.FromRgb( 0x00, 0xff, 0xff )  //cyan
+                Color.FromRgb( 0x00, 0x00, 0xff )   //blue
             };
 
             for (int x = 0; x < board.Width; x++){
@@ -68,9 +65,7 @@ namespace Game.UI
                             TrainStop station = (TrainStop)block;
                             foreach ( int line in station.getLines() ){
                                 Color c = station_colors[ line % station_colors.Count ];
-                                if (!stations.ContainsKey(c)){
-                                    stations[c] = new List<GamePoint>();
-                                }
+                                if (!stations.ContainsKey(c)){stations[c] = new List<GamePoint>();}
                                 stations[c].Add(position);
                             }
                             canvas.addBlock(GameCanvas.BlockType.Path, position);
@@ -118,7 +113,6 @@ namespace Game.UI
                     }
                 }
             }
-            //Dictionary<Color, List<GamePoint>> stations = new Dictionary<Color,List<GamePoint>>();
             foreach (Color c in stations.Keys){
                 canvas.addLine(c, stations[c]);
             }

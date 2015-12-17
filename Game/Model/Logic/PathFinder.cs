@@ -127,7 +127,7 @@ namespace Game.Model.Logic
         private List<Point> getShortestPath( Point from, Point to, CanPass canPass, bool recalcPaths ){
             if (!validIndex(from) || !validIndex(to)) throw new ArgumentException("invalid position");
             // spelplanen behöver inte alltid räknas om:
-            if (recalcPaths) updateCosts(to, canPass);
+            if (recalcPaths){updateCosts(to, canPass);}
             // om rutan inte kan nås så returneras ingen väg:
             if (costs[from.X, from.Y] == int.MaxValue) return null;
 
@@ -140,6 +140,7 @@ namespace Game.Model.Logic
                 foreach ( Point neighbour in getNeighbourPositions(last_pos) ){
                     if ( validIndex(neighbour) && costs[neighbour.X, neighbour.Y] < costs[last_pos.X, last_pos.Y] ){
                         path.Add(neighbour);
+                        break;
                     }
                 }
             }
