@@ -46,8 +46,15 @@ namespace Game.UI.Controls
         public void addLine(Color c, List<GamePoint> stations)
         {
             BoardStations[c] = stations;
-            BoardLines[c] = new List<GamePoint>();
-            //TODO: kalla på pathfinding för att lägga till BoardLines
+            BoardLines[c] = new List<List<GamePoint>>();
+
+            LinePathPassCheck can_pass = new LinePathPassCheck(BoardBlocks);
+            for ( int i = 1; i < BoardStations[c].Count; i++ ){
+                List<GamePoint> path = path_finder.getShortestPath(BoardStations[c][i-1], BoardStations[c][i], can_pass);
+                BoardLines[c].Add(path);
+            }
+
+
 
             this.InvalidateVisual();
         }
@@ -70,12 +77,12 @@ namespace Game.UI.Controls
             path_finder = new PathFinder( width, height );
         }
 
-        private Dictionary<GamePoint, string>       BoardText;
-        private Dictionary<GamePoint, BlockType>    BoardBlocks;
-        private Dictionary<GamePoint, PieceType>    BoardPieces;
-        private Dictionary<Color, List<GamePoint>>  BoardLines;
-        private Dictionary<Color, List<GamePoint>>  BoardStations;
-        public SimpleEventDictionary<GamePoint, Color> MarkedSquares;
+        private Dictionary<GamePoint, string>               BoardText;
+        private Dictionary<GamePoint, BlockType>            BoardBlocks;
+        private Dictionary<GamePoint, PieceType>            BoardPieces;
+        private Dictionary<Color, List<List<GamePoint>>>    BoardLines;
+        private Dictionary<Color, List<GamePoint>>          BoardStations;
+        public SimpleEventDictionary<GamePoint, Color>      MarkedSquares;
         
         private GamePoint _boardSelection;
         public GamePoint BoardSelection {
@@ -92,7 +99,7 @@ namespace Game.UI.Controls
             BoardText      = new Dictionary<GamePoint, string>();
             BoardBlocks    = new Dictionary<GamePoint,BlockType>();
             BoardPieces    = new Dictionary<GamePoint,PieceType>();
-            BoardLines     = new Dictionary<Color,List<GamePoint>>();
+            BoardLines     = new Dictionary<Color,List<List<GamePoint>>>();
             BoardStations  = new Dictionary<Color, List<GamePoint>>();
             MarkedSquares  = new SimpleEventDictionary<GamePoint,Color>();
             
@@ -142,13 +149,14 @@ namespace Game.UI.Controls
                 Brush brush = new SolidColorBrush( c );
                 Pen   pen   = new Pen( brush, 1.5 );
 
-                for (int i = 1; i < BoardLines[c].Count; i++ )
-                {
-                    Point a = new Point( BoardLines[c][i-1].X, BoardLines[c][i-1].Y );
-                    Point b = new Point( BoardLines[c][ i ].X, BoardLines[c][ i ].Y );
-
-                    dc.DrawLine( pen, a, b );
+                foreach (List<GamePoint> line in BoardLines[c]){
+                    for (int i = 1; i < BoardLines[c].Count; i++){
+                        Point a = new Point(line[i - 1].X, line[i - 1].Y);
+                        Point b = new Point(line[i].X, line[i].Y);
+                        dc.DrawLine(pen, a, b);
+                    }
                 }
+
             }
 
             // draw stations:
