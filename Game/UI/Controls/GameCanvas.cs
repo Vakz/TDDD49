@@ -54,8 +54,6 @@ namespace Game.UI.Controls
                 BoardLines[c].Add(path);
             }
 
-
-
             this.InvalidateVisual();
         }
 
@@ -82,7 +80,7 @@ namespace Game.UI.Controls
         private Dictionary<GamePoint, PieceType>            BoardPieces;
         private Dictionary<Color, List<List<GamePoint>>>    BoardLines;
         private Dictionary<Color, List<GamePoint>>          BoardStations;
-        public SimpleEventDictionary<GamePoint, Color>      MarkedSquares;
+        public SimpleEventDictionary<GamePoint, Color> MarkedSquares = new SimpleEventDictionary<GamePoint, Color>();
         
         private GamePoint _boardSelection;
         public GamePoint BoardSelection {
@@ -101,7 +99,6 @@ namespace Game.UI.Controls
             BoardPieces    = new Dictionary<GamePoint,PieceType>();
             BoardLines     = new Dictionary<Color,List<List<GamePoint>>>();
             BoardStations  = new Dictionary<Color, List<GamePoint>>();
-            MarkedSquares  = new SimpleEventDictionary<GamePoint,Color>();
             
             BoardSelection = GamePoint.Error;
         }
@@ -151,8 +148,8 @@ namespace Game.UI.Controls
 
                 foreach (List<GamePoint> line in BoardLines[c]){
                     for (int i = 1; i < BoardLines[c].Count; i++){
-                        Point a = new Point(line[i - 1].X, line[i - 1].Y);
-                        Point b = new Point(line[i].X, line[i].Y);
+                        Point a = new Point(_tileSize * line[i - 1].X + _tileSize / 2, _tileSize * line[i - 1].Y + _tileSize / 2);
+                        Point b = new Point(_tileSize * line[i].X + _tileSize / 2, _tileSize * line[i].Y + _tileSize / 2);
                         dc.DrawLine(pen, a, b);
                     }
                 }
@@ -165,8 +162,8 @@ namespace Game.UI.Controls
                 Pen pen = new Pen(brush, 1.0);
 
                 foreach ( GamePoint p in BoardStations[c] ){
-                    Point center = new Point( p.X, p.Y );
-                    dc.DrawEllipse( brush, pen, center, ((double)_tileSize)/2.0, ((double)_tileSize)/2.0 );
+                    Point center = new Point(p.X * _tileSize + _tileSize / 2, p.Y * _tileSize + _tileSize / 2);
+                    dc.DrawEllipse( brush, pen, center, ((double)_tileSize)/4.0, ((double)_tileSize)/4.0 );
                 }
             }
 

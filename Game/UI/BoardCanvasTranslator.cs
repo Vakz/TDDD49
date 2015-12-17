@@ -23,6 +23,7 @@ namespace Game.UI
 
             canvas.setPathFinder(board.Width, board.Height);
             addStaticsToCanvas();
+            update();
         }
 
         public void update(){
@@ -67,6 +68,9 @@ namespace Game.UI
                             TrainStop station = (TrainStop)block;
                             foreach ( int line in station.getLines() ){
                                 Color c = station_colors[ line % station_colors.Count ];
+                                if (!stations.ContainsKey(c)){
+                                    stations[c] = new List<GamePoint>();
+                                }
                                 stations[c].Add(position);
                             }
                             canvas.addBlock(GameCanvas.BlockType.Path, position);
@@ -105,6 +109,9 @@ namespace Game.UI
 
                         // BlockType.Special without text:
                         case BlockType.TravelAgency:
+                            canvas.addText("Travel Agency", position);
+                            canvas.addBlock(GameCanvas.BlockType.Special, position);
+                            break;
                         case BlockType.PoliceStation:
                             canvas.addBlock(GameCanvas.BlockType.Special, position);
                             break;

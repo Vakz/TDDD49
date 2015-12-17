@@ -138,7 +138,7 @@ namespace Game.Model.Logic
                 last_pos = path[path.Count - 1];
 
                 foreach ( Point neighbour in getNeighbourPositions(last_pos) ){
-                    if ( costs[neighbour.X, neighbour.Y] < costs[last_pos.X, last_pos.Y] ){
+                    if ( validIndex(neighbour) && costs[neighbour.X, neighbour.Y] < costs[last_pos.X, last_pos.Y] ){
                         path.Add(neighbour);
                     }
                 }

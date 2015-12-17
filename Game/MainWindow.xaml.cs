@@ -39,10 +39,13 @@ namespace Game
             }
         }
 
+        BoardCanvasTranslator boardCanvasTranslator;
+
         public MainWindow()
         {
             InitializeComponent();
             InitializeGame(2, true);
+            /*
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Special, new BoardPoint(6, 2));
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(6, 1));
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(5, 1));
@@ -51,6 +54,8 @@ namespace Game
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(2, 1));
             BoardCanvas.addBlock(UI.Controls.GameCanvas.BlockType.Path, new BoardPoint(1, 1));
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
+             */
+            boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
             Skip.Click += SkipClick;
             SettingsButton.Click += SettingsClick;
             NewGameButton.Click += RestartClick;
@@ -100,6 +105,7 @@ namespace Game
             Dice.Data = Game.DiceRoll.ToString();
             ThiefMoney.Data = Game.ThiefMoney.ToString();
             PoliceMoney.Data = Game.PoliceMoney.ToString();
+            boardCanvasTranslator.update();
         }
 
         public void RestartClick(object Sender, RoutedEventArgs e)
