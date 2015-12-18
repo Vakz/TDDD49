@@ -46,9 +46,9 @@ namespace Game.Model.Rules
         private bool canReach(Piece piece, Point dest, int cost) {
             PieceCanPassPoint canPass = new PieceCanPassPoint(piece, _board, this);
             if ( cost == -1 ) {
-                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count != 0;
+                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count - 1 != 0;
             } else if (_board[dest].Type == BlockType.EscapeAirport) {
-                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count <= cost;
+                return pathfinder.getShortestPath(piece.Position, dest, canPass).Count - 1 <= cost;
             } else {
                 List<Point> path = pathfinder.getPathWithExactCost(piece.Position, dest, cost, canPass);
                 return path != null && (path.Count - 1) == cost;

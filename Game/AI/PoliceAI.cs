@@ -53,16 +53,23 @@ namespace Game.AI
             List<Point> pieces = game_controller.getCurrentPlayerPositions();
             List<Point> targets = getPreferredTargets();
 
-            Dictionary<Point, Point> closest_target = new Dictionary<Point, Point>();
+            Dictionary<Point, Point> closest_targets = new Dictionary<Point, Point>();
             foreach (Point p in pieces){
                 Point closest = Point.Error;
                 foreach (Point t in targets){
                     if (manhattan_dist(p, t) < manhattan_dist(p, closest)){
                         closest = t;
                     }
-                    
                 }
+                closest_targets[p] = closest;
             }
+
+            Point from = Point.Error;
+            Point to   = Point.Error;
+
+
+            game_controller.move(from, to);
+            game_controller.skip();
         }
 
     }
