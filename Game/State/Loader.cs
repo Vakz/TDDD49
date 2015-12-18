@@ -78,6 +78,7 @@ namespace Game.State
             IEnumerable<Piece> t = from p in pieces.Elements("Piece")
                                    select new Piece(Convert.ToInt32(p.Attribute("ID").Value), Position(p.Element("Position")))
                                    {
+                                       Active = Convert.ToBoolean(p.Element("Active").Value),
                                        Alive = Convert.ToBoolean(p.Element("Alive").Value),
                                        TurnsOnCurrentPosition = Convert.ToInt32(p.Element("TurnsOnCurrentPosition").Value),
                                        TrainMovementStreak = Convert.ToInt32(p.Element("TrainMovementStreak").Value)
@@ -115,7 +116,8 @@ namespace Game.State
                 Money = Convert.ToInt32(piece.Element("Money").Value),
                 ArrestTurns = Convert.ToInt32(piece.Element("ArrestTurns").Value),
                 ArrestCount = Convert.ToInt32(piece.Element("ArrestCount").Value),
-                HiddenMoney = HiddenMoney(piece.Element("HiddenMoney"))
+                HiddenMoney = HiddenMoney(piece.Element("HiddenMoney")),
+                Active = Convert.ToBoolean(piece.Element("Active").Value)
             };
         }
 
