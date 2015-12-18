@@ -65,7 +65,11 @@ namespace Game.Model.Rules
                 this.board = board;
             }
             public bool check(Point pt){
-                return (piece.Type == PieceType.Police && board[pt].Type == BlockType.Bank) || rule_engine.isAllowedOn(pt, piece);
+                if (piece.Type == PieceType.Police && board[pt].Type == BlockType.Bank) return true;
+
+                Piece p = board.getPieceAt(pt);
+                if (piece.Type == PieceType.Thief && ((Thief)piece).Arrestable && p != null && p.Type == PieceType.Police) return false;
+                return rule_engine.isAllowedOn(pt, piece);
             }
         }
 
