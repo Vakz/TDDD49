@@ -27,12 +27,14 @@ namespace Game.Model
             }
         }
 
-        public PolicePlayer(int id, List<Point> policeSpawnpoints)
+        public PolicePlayer(int id)
         {
             Pieces = new List<Piece>();
-            foreach (Point pt in policeSpawnpoints) {
-                Pieces.Add(new Piece(++id, pt));
-            }
+        }
+
+        public Piece addPiece(Point pt) {
+            Pieces.Add(new Piece(ID + Pieces.Count, pt));
+            return Pieces.Last();
         }
 
         public bool allowedToMovePiece(Piece p)

@@ -18,6 +18,7 @@ namespace Game.Model.DataStructures
         public Thief(int id, Point p) : base(id, p)
         {
             Type = PieceType.Thief;
+            HiddenMoney = new Dictionary<Point, int>();
         }
 
         public int arrest(int turns) 

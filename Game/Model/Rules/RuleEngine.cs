@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
 using Game.Model.Logic;
+using Game.Exceptions;
 
 namespace Game.Model.Rules
 {
@@ -85,10 +86,10 @@ namespace Game.Model.Rules
                 case BlockType.Hideout:
                 case BlockType.EscapeAirport:
                 case BlockType.EscapeCheap:
+                case BlockType.Bank:
                     return p.Type == PieceType.Thief;
                 case BlockType.TrainStop:
                 case BlockType.Normal:
-                case BlockType.Bank:
                 case BlockType.Telegraph:
                     return true;
                 default:

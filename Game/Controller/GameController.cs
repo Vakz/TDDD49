@@ -99,6 +99,15 @@ namespace Game.Controller
             Game.State.AIPolice = AIPolice;
         }
 
+        public bool CurrentPlayerInJail
+        {
+            get
+            {
+                if (!(Game.CurrentPlayer.getControlledPieces()[0].Type == PieceType.Thief)) return false;
+                return ((ThiefPlayer)Game.CurrentPlayer).Piece.ArrestTurns > 0;
+            }
+        }
+
         public GameController()
         {
             Game = new BoardController();
@@ -144,6 +153,12 @@ namespace Game.Controller
         /// </summary>
         public void skip() {
             Game.skipTurn();
+        }
+
+        public bool attemptEscape()
+        {
+            if (!CurrentPlayerInJail) throw new ArgumentException("Current player is not in jail");
+            return Game.attemptEscapeJail();
         }
 
         public int DiceRoll

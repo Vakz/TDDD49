@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="State\Loader.cs" />
     <Compile Include="State\Player.cs" />
+    <Compile Include="State\Saver.cs" />
     <Compile Include="UI\BoardCanvasTranslator.cs" />
     <Compile Include="UI\Controls\TextBlockWithTitle.cs" />
     <Compile Include="UI\ExtensionMethods.cs" />

@@ -18,7 +18,7 @@ using BoardPoint = Game.Model.DataStructures.Point;
 
 namespace Game
 {
-    // TODO: Police can stop in bank/telegraph
+    // TODO: Add escape button
 
 
     /// <summary>
@@ -46,12 +46,13 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame(2, true);
+            InitializeGame();
             BoardCanvas.MouseLeftButtonDown += CanvasClick;
-            boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+            
             Skip.Click += SkipClick;
             SettingsButton.Click += SettingsClick;
             NewGameButton.Click += RestartClick;
+            AttemptEscape.Click += AttemptEscapeClick;
             NewTurn();
         }
 
@@ -63,6 +64,7 @@ namespace Game
             // Game has ended
             if (Game.GameRunning)
             {
+                AttemptEscape.Visibility = Game.CurrentPlayerInJail ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
                 BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
                 UpdateInfoPanels();
             }
@@ -89,7 +91,27 @@ namespace Game
             bool? save = w.ShowDialog();
             if (save.Value)
             {
-                InitializeGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
+                Game.newGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
+                boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+            }
+        }
+        
+        public void AttemptEscapeClick(object Sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if(Game.attemptEscape()){
+                    setError("You have escaped!");
+                }
+                else
+                {
+                    NewTurn();
+                }
+                
+            }
+            catch (ArgumentException ae)
+            {
+                setError(ae.Message);
             }
         }
 
@@ -104,14 +126,16 @@ namespace Game
         public void RestartClick(object Sender, RoutedEventArgs e)
         {
             NewTurn();
-            InitializeGame(Game.HumanPlayers, Game.AIPolice);
+            Game.newGame(Game.HumanPlayers, Game.AIPolice);
+            boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
         }
 
-        private void InitializeGame(int nrOfHumans, bool AIPolice)
+        private void InitializeGame()
         {
             Game = new GameController();
             Selected = BoardPoint.Error;
             Dice.Data = Game.DiceRoll.ToString();
+            boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
         }
 
         private void SkipClick(object Sender, RoutedEventArgs e)

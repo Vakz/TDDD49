@@ -73,7 +73,7 @@ namespace Game.State
 
         private static PolicePlayer PolicePlayer(XElement player)
         {
-            return new PolicePlayer(Convert.ToInt32(player.Attribute("ID").Value), new List<Point>())
+            return new PolicePlayer(Convert.ToInt32(player.Attribute("ID").Value))
                                           {
                                               Money = Convert.ToInt32(player.Attribute("Money").Value),
                                               Pieces = PolicePieces(player.Element("Pieces"))

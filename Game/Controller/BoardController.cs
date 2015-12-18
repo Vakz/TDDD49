@@ -90,12 +90,11 @@ namespace Game.Controller
         private void addPolicePlayer(int nrOfPolice)
         {
             List<Point> spawnpoints = new List<Point>();
+            State.PolicePlayer = new PolicePlayer(State.Players.Count);
             for (int i = 0; i < nrOfPolice; ++i)
             {
-                spawnpoints.Add(State.Board.getUnoccupiedByBlockType(BlockType.PoliceStation));
+                State.Board.addPiece(State.PolicePlayer.addPiece(State.Board.getUnoccupiedByBlockType(BlockType.PoliceStation)));
             }
-            State.PolicePlayer = new PolicePlayer(State.Players.Count, spawnpoints);
-            State.Board.addPiece(State.PolicePlayer.getControlledPieces());
         }
 
         public int EscapedThiefMoney {
@@ -152,6 +151,7 @@ namespace Game.Controller
                 if (movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
                 else p.TrainMovementStreak = 0;
                 p.Position = pt;
+                p.TurnsOnCurrentPosition = 0;
                 if (p.Type == PieceType.Thief) attemptToRobPos((Thief)p, pt);
             }
             p.TurnsOnCurrentPosition++;
@@ -218,27 +218,29 @@ namespace Game.Controller
             }
             // At end of thief turn, check if arrested and potentially release
             else {
-                decrementArrestTime(State.ThiefPlayers[State.CurrentPlayerIndex].Piece);
+                Thief t = State.ThiefPlayers[State.CurrentPlayerIndex].Piece;
+                if (t.ArrestTurns > 0)
+                {
+                    t.ArrestTurns--;
+                    if (t.ArrestTurns == 0) ruleEngine.release(t);
+                }
             }
             nextPlayer();
+            Saver.Save(State);
             // If all thieves arrested or no thief pieces on the board, end the game
             State.GameRunning = State.ThiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
         }
 
-        private void decrementArrestTime(Thief t) {
-            if (t.ArrestTurns > 0) {
-                t.ArrestTurns--;
-                if (t.ArrestTurns == 0) ruleEngine.release(t);
-            }
-        }
-
-        public void attemptEscapeJail()
+        public bool attemptEscapeJail()
         {
             if (LogicEngine.diceRoll() == 6)
             {
                 ruleEngine.release(State.ThiefPlayers[State.CurrentPlayerIndex].Piece);
                 State.ThiefPlayers[State.CurrentPlayerIndex].Piece.Arrestable = true;
+                return true;
             }
+            endTurn();
+            return false;
         }
 
         public void nextPlayer()
