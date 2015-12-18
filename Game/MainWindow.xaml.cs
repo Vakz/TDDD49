@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Game.Controller;
 using Game.UI;
+using Game.State;
 using BoardPoint = Game.Model.DataStructures.Point;
 
 namespace Game
@@ -27,6 +28,7 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController Game;
+        
         BoardPoint _selected = BoardPoint.Error;
         BoardPoint Selected
         {
@@ -54,6 +56,13 @@ namespace Game
             NewGameButton.Click += RestartClick;
             AttemptEscape.Click += AttemptEscapeClick;
             NewTurn();
+            Game.OnReloadedState += delegate() { 
+                this.Dispatcher.Invoke(delegate() {
+                    boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+                    UpdateInfoPanels();
+                    BoardCanvas.InvalidateVisual();
+                });
+            };
         }
 
         public void NewTurn()
@@ -65,7 +74,7 @@ namespace Game
             if (Game.GameRunning)
             {
                 AttemptEscape.Visibility = Game.CurrentPlayerInJail ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
-                BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
+                
                 UpdateInfoPanels();
             }
             else
@@ -93,6 +102,7 @@ namespace Game
             {
                 Game.newGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
                 boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+
             }
         }
         
@@ -117,10 +127,12 @@ namespace Game
 
         public void UpdateInfoPanels()
         {
+            BoardCanvas.MarkedSquares.replace(Game.getCurrentPlayerPositions(), Color.FromRgb(0xff, 0xff, 0xff));
             Dice.Data = Game.DiceRoll.ToString();
             ThiefMoney.Data = Game.ThiefMoney.ToString();
             PoliceMoney.Data = Game.PoliceMoney.ToString();
             boardCanvasTranslator.update();
+            BoardCanvas.InvalidateVisual();
         }
 
         public void RestartClick(object Sender, RoutedEventArgs e)
@@ -128,6 +140,7 @@ namespace Game
             NewTurn();
             Game.newGame(Game.HumanPlayers, Game.AIPolice);
             boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+            UpdateInfoPanels();
         }
 
         private void InitializeGame()
@@ -136,6 +149,7 @@ namespace Game
             Selected = BoardPoint.Error;
             Dice.Data = Game.DiceRoll.ToString();
             boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+            UpdateInfoPanels();
         }
 
         private void SkipClick(object Sender, RoutedEventArgs e)

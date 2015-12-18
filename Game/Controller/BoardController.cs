@@ -19,21 +19,33 @@ namespace Game.Controller
         
         private RuleEngine ruleEngine;
         private LogicEngine logicEngine;
+        public Action OnReloadedState { get; set; }
         
 
         public GameState State { get; set; }
+        SaveHandler SaveHandler { get; set; }
 
         public BoardController()
         {
-            State = Loader.Load();
-            if (State == null) newGame(2);
+            SaveHandler = new SaveHandler();
+            
+            gameFromFile();
             ruleEngine = new RuleEngine(State.Board);
             logicEngine = new LogicEngine(State.Board);
+            SaveHandler.OnManualSaveChange += gameFromFile;
+        }
+
+        private void gameFromFile() {
+            State = SaveHandler.Load();
+            if (State == null) newGame(2);
+            else if(OnReloadedState != null) OnReloadedState();
         }
 
         public BoardController(int nrOfPlayers)
         {
+            SaveHandler = new SaveHandler();
             newGame(nrOfPlayers);
+            SaveHandler.OnManualSaveChange += gameFromFile;
         }
 
         private void newGame(int nrOfPlayers)
@@ -47,6 +59,7 @@ namespace Game.Controller
             logicEngine = new LogicEngine(State.Board);
             State.CurrentPlayerDiceRoll = LogicEngine.diceRoll(); // Initial player roll
             State.CurrentPlayerIndex = State.Players.Count - 1;
+            if (OnReloadedState != null) OnReloadedState();
         }
 
         public IPlayer CurrentPlayer {
@@ -226,7 +239,7 @@ namespace Game.Controller
                 }
             }
             nextPlayer();
-            Saver.Save(State);
+            SaveHandler.Save(State);
             // If all thieves arrested or no thief pieces on the board, end the game
             State.GameRunning = State.ThiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
         }

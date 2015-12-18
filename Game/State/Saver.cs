@@ -7,18 +7,19 @@ using Game.Model.DataStructures;
 using System.Xml.Linq;
 using Game.Model;
 using System.IO;
+using System.Xml;
 
 namespace Game.State
 {
     static class Saver
     {
-        static string filename = Directory.GetCurrentDirectory() + "\\Resources\\save.xml"; 
 
-        public static void Save(GameState state)
+        public static void Save(string filename, GameState state)
         {
             XDocument x = new XDocument();
             x.Add(new XElement("Save", XmlGameState(state)));
             x.Save(filename);
+            
         }
 
         private static XElement XmlGameState(GameState state)

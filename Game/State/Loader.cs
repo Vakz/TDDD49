@@ -7,23 +7,37 @@ using Game.Model.DataStructures;
 using System.Xml.Linq;
 using Game.Model;
 using System.IO;
+using System.Xml;
 
 namespace Game.State
 {
     static class Loader
-    {
-        static string filename = Directory.GetCurrentDirectory() + "\\Resources\\save.xml";
-
-        public static Board LoadBoard()
+    {        public static Board LoadBoard()
         {
             return Game.Model.Logic.BoardReader.readBoard(Directory.GetCurrentDirectory() + "\\Resources\\board.txt");
         }
 
-        public static GameState Load()
+        public static GameState Load(string filename)
         {
             if (!File.Exists(filename)) return null;
-            XDocument doc = XDocument.Load(filename);
+            XDocument doc;
+            // Purge with fire
+            while (true)
+            {
+                try
+                {
+                    using (var reader = XmlReader.Create(filename))
+                    {
+                        doc = XDocument.Load(reader);
+                        break;
+                    }
+                    
+                }
+                catch (Exception) { }
+            }
+            
             if (!Convert.ToBoolean(doc.Root.Element("GameState").Element("GameRunning").Value)) return null;
+            
             return GameState(doc.Root);
         }
 

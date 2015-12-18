@@ -17,6 +17,18 @@ namespace Game.Controller
             get { return Game.State.Board; }
         }
 
+        public Action OnReloadedState
+        {
+            get
+            {
+                return Game.OnReloadedState;
+            }
+            set
+            {
+                Game.OnReloadedState = value;
+            }
+        }
+
         public int Width
         {
             get
