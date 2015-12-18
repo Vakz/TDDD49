@@ -37,10 +37,10 @@ namespace Game.Model.Rules
             return canReach(piece, dest, cost);
         }
 
-        public bool isThiefSurrounded(PathFinder pf, List<Point> hideouts, Thief t)
+        public bool isThiefSurrounded(List<Point> hideouts, Thief t)
         {
             PieceCanPassPoint canPass = new PieceCanPassPoint(t, _board, this);
-            return pf.getClosestPointOfInterest(t.Position, hideouts, canPass) == Point.Error;
+            return pathfinder.getClosestPointOfInterest(t.Position, hideouts, canPass) == Point.Error;
         }
 
         private bool canReach(Piece piece, Point dest, int cost) {
@@ -68,7 +68,8 @@ namespace Game.Model.Rules
                 if (piece.Type == PieceType.Police && board[pt].Type == BlockType.Bank) return true;
 
                 Piece p = board.getPieceAt(pt);
-                if (piece.Type == PieceType.Thief && ((Thief)piece).Arrestable && p != null && p.Type == PieceType.Police) return false;
+                if (piece.Type == PieceType.Thief && ((Thief)piece).Arrestable && p != null && p.Type == PieceType.Police) 
+                    return false;
                 return rule_engine.isAllowedOn(pt, piece);
             }
         }

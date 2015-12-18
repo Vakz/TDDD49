@@ -152,12 +152,7 @@ namespace Game.Controller
             else if (ruleEngine.canArrestAt(p, pt))
             {
                 Thief arrestTarget = (Thief)State.Board.getPieceAt(pt);
-                State.PolicePlayer.Money += ruleEngine.arrest(arrestTarget, p);
-                if (arrestTarget.ArrestCount == RuleEngine.MAX_ARRESTS)
-                {
-                    ruleEngine.removePieceFromGame(p);
-                    ruleEngine.removePieceFromGame(arrestTarget);
-                }
+                makeArrest(p, arrestTarget);
             }
             else
             {
@@ -170,6 +165,16 @@ namespace Game.Controller
             p.TurnsOnCurrentPosition++;
             endTurn();
             return true;
+        }
+
+        private void makeArrest(Piece police, Thief thief)
+        {
+            State.PolicePlayer.Money += ruleEngine.arrest(thief, police);
+            if (thief.ArrestCount == RuleEngine.MAX_ARRESTS)
+            {
+                ruleEngine.removePieceFromGame(police);
+                ruleEngine.removePieceFromGame(thief);
+            }
         }
 
         private void attemptToRobPos(Thief t, Point pt) {
@@ -219,10 +224,19 @@ namespace Game.Controller
         {
             // TODO: Check if any thieves are surrounded
 
+
             // When police turn ends, check if any thief is attempting to escape
             // All players have at least one piece, so using index 0 is safe.
             if (isPoliceTurn)
             {
+                foreach (Thief t in State.ThiefPlayers.Select<ThiefPlayer, Piece>(s => s.Piece))
+                {
+                    if (ruleEngine.isThiefSurrounded(State.Board.SpecialBlocks[BlockType.Hideout], t))
+                    {
+                        makeArrest(State.PolicePlayer.getControlledPieces().First(), t);
+                    }
+                }
+
                 List<ThiefPlayer> escaping = State.ThiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
                 foreach(ThiefPlayer tp in escaping)
                 {

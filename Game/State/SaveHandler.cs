@@ -36,11 +36,12 @@ namespace Game.State
         }
 
         private void OnChanged(object source, FileSystemEventArgs e) {
-            if (File.GetLastWriteTime(filename) > lastSave)
+            DateTime newEdit = File.GetLastWriteTime(filename);
+            if (newEdit.CompareTo(lastSave) > 0)
             {
-                lastSave = File.GetLastWriteTime(filename).AddSeconds(1);
-                
-                OnManualSaveChange();
+                lastSave = newEdit;
+                if (OnManualSaveChange != null)
+                    OnManualSaveChange();
             }
         }
 

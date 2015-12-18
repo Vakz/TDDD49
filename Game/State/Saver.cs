@@ -81,6 +81,7 @@ namespace Game.State
             piece.Add(new XAttribute("ID", p.ID));
             piece.Add(XmlPoint(p.Position));
             piece.Add(new XElement("Alive", p.Alive));
+            piece.Add(new XElement("Active", p.Active));
             piece.Add(new XElement("TurnsOnCurrentPosition", p.TurnsOnCurrentPosition));
             piece.Add(new XElement("TrainMovementStreak", p.TrainMovementStreak));
             return piece;

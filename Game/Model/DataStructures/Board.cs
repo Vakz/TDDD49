@@ -103,7 +103,7 @@ namespace Game.Model.DataStructures
 
         public bool isEscape(Point p)
         {
-            return this[p].Type == BlockType.EscapeCheap || this[p].Type == BlockType.EscapeAirport;
+            return (p.X >= 0 && p.Y >= 0) && (this[p].Type == BlockType.EscapeCheap || this[p].Type == BlockType.EscapeAirport);
         }
     }
 }
