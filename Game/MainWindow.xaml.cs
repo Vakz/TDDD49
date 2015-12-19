@@ -57,12 +57,15 @@ namespace Game
             AttemptEscape.Click += AttemptEscapeClick;
             NewTurn();
             Game.OnReloadedState += delegate() { 
-                this.Dispatcher.Invoke(delegate() {
-                    boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
-                    UpdateInfoPanels();
-                    BoardCanvas.InvalidateVisual();
-                });
+                this.Dispatcher.Invoke(reloadUI);
             };
+        }
+
+        private void reloadUI()
+        {
+            boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+            UpdateInfoPanels();
+            BoardCanvas.InvalidateVisual();
         }
 
         public void NewTurn()

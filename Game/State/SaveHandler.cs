@@ -12,11 +12,16 @@ namespace Game.State
     {
         DateTime lastSave = DateTime.MinValue;
         string filename = Directory.GetCurrentDirectory() + "\\Resources\\save.xml";
+        FileSystemWatcher watcher = new FileSystemWatcher();
 
         public void Save(GameState state)
         {
+            // Disable the watcher while saving, to avoid our own save
+            // causing the game to reload
+            watcher.EnableRaisingEvents = false;
             Saver.Save(filename, state);
             lastSave = File.GetLastWriteTime(filename);
+            watcher.EnableRaisingEvents = true;
         }
 
         public GameState Load()
@@ -26,7 +31,6 @@ namespace Game.State
 
         public SaveHandler()
         {
-            FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = Path.GetDirectoryName(filename);
             watcher.Filter = "*.xml";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -39,7 +43,7 @@ namespace Game.State
             DateTime newEdit = File.GetLastWriteTime(filename);
             if (newEdit.CompareTo(lastSave) > 0)
             {
-                lastSave = newEdit;
+                lastSave = newEdit.AddSeconds(3);
                 if (OnManualSaveChange != null)
                     OnManualSaveChange();
             }
