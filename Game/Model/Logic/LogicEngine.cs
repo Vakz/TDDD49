@@ -28,9 +28,20 @@ namespace Game.Model.Logic
         }
 
         public bool escapingThiefPred(ThiefPlayer tp) {
+            BlockType escapeType = board[tp.Piece.Position].Type;
+            if (escapeType == BlockType.EscapeAirport && tp.Money < 3000) return false;
+            if (escapeType == BlockType.EscapeCheap && tp.Money < 1000) return false;
             return tp.Piece.Type == PieceType.Thief && tp.Piece.Alive && tp.Piece.Arrestable
                             && new[] { BlockType.EscapeAirport, BlockType.EscapeCheap }.Any(b => board[tp.Piece.Position].Type == b);
         }
+
+        public Piece anyPieceTypeOnBlockType(PieceType pt, BlockType bt)
+        {
+            IReadOnlyCollection<Piece> pieces = board.Pieces.Where(s => s.Type == pt).ToList().AsReadOnly();
+            return pieces.FirstOrDefault(s => board[s.Position].Type == bt);
+        }
+
+        
 
         public bool isRobableBlock(Block b)
         {

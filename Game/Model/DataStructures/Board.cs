@@ -29,7 +29,8 @@ namespace Game.Model.DataStructures
         {
             get
             {
-                return _board[y, x];
+                Block b = _board[y, x];
+                return b;
             }
             set
             {

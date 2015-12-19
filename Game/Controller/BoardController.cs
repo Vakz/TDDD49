@@ -240,7 +240,12 @@ namespace Game.Controller
                 List<ThiefPlayer> escaping = State.ThiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
                 foreach(ThiefPlayer tp in escaping)
                 {
-                    ruleEngine.removePieceFromGame(tp.Piece);
+                    int cost = State.Board[tp.Piece.Position].Type == BlockType.EscapeAirport ? 3000 : 1000;
+                    tp.Piece.Money -= cost;
+                    addTravelAgencyMoney(cost);
+                    Piece p = logicEngine.anyPieceTypeOnBlockType(PieceType.Police, BlockType.Telegraph);
+                    if (p != null) makeArrest(p, tp.Piece);
+                    else ruleEngine.removePieceFromGame(tp.Piece);
                 }
             }
             // At end of thief turn, check if arrested and potentially release
@@ -256,6 +261,11 @@ namespace Game.Controller
             SaveHandler.Save(State);
             // If all thieves arrested or no thief pieces on the board, end the game
             State.GameRunning = State.ThiefPlayers.Any(s => s.Piece.Alive && s.Piece.ArrestTurns == 0);
+        }
+
+        public void addTravelAgencyMoney(int amount)
+        {
+            ((TravelAgency)State.Board[State.Board.SpecialBlocks[BlockType.TravelAgency].First()]).addMoney(amount);
         }
 
         public bool attemptEscapeJail()

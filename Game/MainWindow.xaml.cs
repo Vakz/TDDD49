@@ -105,7 +105,7 @@ namespace Game
             {
                 Game.newGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
                 boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
-
+                UpdateInfoPanels();
             }
         }
         
@@ -140,7 +140,6 @@ namespace Game
 
         public void RestartClick(object Sender, RoutedEventArgs e)
         {
-            NewTurn();
             Game.newGame(Game.HumanPlayers, Game.AIPolice);
             boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
             UpdateInfoPanels();

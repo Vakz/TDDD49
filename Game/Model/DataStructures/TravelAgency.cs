@@ -14,7 +14,7 @@ namespace Game.Model.DataStructures
             Type = BlockType.TravelAgency;
         }
 
-        void addMoney(int money)
+        public void addMoney(int money)
         {
             Money += money;
         }
