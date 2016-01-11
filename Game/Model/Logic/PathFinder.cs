@@ -119,6 +119,21 @@ namespace Game.Model.Logic
             return null;
         }
 
+        public List<Point> getPointsWithExactCost(Point from, int cost, CanPass canPass){
+            updateCosts(from, canPass);
+            List<Point> points = new List<Point>();
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    if (costs[x, y] == cost) {
+                        points.Add(new Point(x, y));
+                    }
+                }
+            }
+            return points;
+        }
+
+
+
         public List<Point> getShortestPath(Point from, Point to, CanPass canPass)
         {
             return getShortestPath(from, to, canPass, true);

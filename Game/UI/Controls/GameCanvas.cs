@@ -172,7 +172,8 @@ namespace Game.UI.Controls
             // draw pieces:
             foreach (GamePoint p in BoardPieces.Keys){
                 PieceType pt = BoardPieces[p];
-                dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
+                if ( p != GamePoint.Error )
+                    dc.DrawImage(PieceBitmaps[pt], new Rect(p.X * _tileSize, p.Y * _tileSize, _tileSize, _tileSize));
             }
 
             // draw marked squares:
@@ -212,6 +213,7 @@ namespace Game.UI.Controls
 
         private void drawOutline(Color c, GamePoint p, DrawingContext dc )
         {
+            if (p == GamePoint.Error) return;
             Brush selection_brush = new SolidColorBrush(c);
             Pen selection_pen = new Pen(selection_brush, 2.0);
 

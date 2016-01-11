@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Game.Model.DataStructures;
 using Game.Controller;
 
+using Game.Model.Logic;
+
 namespace Game.AI
 {
     class PoliceAI
@@ -48,27 +50,34 @@ namespace Game.AI
             }
         }
 
-        public void think()
-        {
+        public void setPathFinderInfo() { }
+
+        public void think() {
             List<Point> pieces = game_controller.getCurrentPlayerPositions();
             List<Point> targets = getPreferredTargets();
 
-            Dictionary<Point, Point> closest_targets = new Dictionary<Point, Point>();
-            foreach (Point p in pieces){
-                Point closest = Point.Error;
-                foreach (Point t in targets){
-                    if (manhattan_dist(p, t) < manhattan_dist(p, closest)){
-                        closest = t;
+            Dictionary<Point, Point> closest_thieves = new Dictionary<Point, Point>();
+            foreach (Point police in pieces){
+                Point closest_thief = Point.Error;
+                foreach (Point thief in targets){
+                    if (manhattan_dist(police, thief) < manhattan_dist(police, closest_thief)){
+                        closest_thief = thief;
                     }
                 }
-                closest_targets[p] = closest;
+                closest_thieves[police] = closest_thief;
             }
 
             Point from = Point.Error;
             Point to   = Point.Error;
 
+            // testa om någon polis kan nå en tjuv direkt:
+            foreach ( Point p in closest_thieves.Keys ) {
+                
+            }
+            // testa om någon polis kan närma sig en tjuv:
 
             game_controller.move(from, to);
+            // annars rör sig polisen inte:
             game_controller.skip();
         }
 
