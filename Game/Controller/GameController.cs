@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Game.Model.DataStructures;
 using Game.Model;
+using Game.AI;
 
 namespace Game.Controller
 {
     class GameController
     {
         private BoardController Game { get; set; }
+        private PoliceAI AI { get; set; }
 
         public Board Board
         {
@@ -109,6 +111,11 @@ namespace Game.Controller
         {
             Game = new BoardController(AIPolice ? nrOfHumans + 1 : nrOfHumans);
             Game.State.AIPolice = AIPolice;
+            if (AIPolice)
+            {
+                AI = new PoliceAI(this);
+                AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height);
+            }
         }
 
         public bool CurrentPlayerInJail

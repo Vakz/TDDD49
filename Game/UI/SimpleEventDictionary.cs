@@ -42,7 +42,7 @@ namespace Game.UI
             }
             catch (Exception)
             {
-                // Not really an issue if someone attempted to remove point that wasn't in the dictionary
+                // Not really an issue if someone attempted to remove something wasn't in the dictionary
             }
         }
 

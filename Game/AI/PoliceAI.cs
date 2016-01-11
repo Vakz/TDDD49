@@ -54,9 +54,9 @@ namespace Game.AI
 
         private PathFinder         pathFinder;
         private PathFinder.CanPass canPass;
-        public void setPathFinderInfo( PathFinder pathFinder, PathFinder.CanPass canPass ){
+        public void setPathFinderInfo( PathFinder pathFinder ){
             this.pathFinder = pathFinder;
-            this.canPass    = canPass;
+            //this.canPass    = canPass;
         }
 
         public void think() {

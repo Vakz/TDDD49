@@ -82,9 +82,10 @@ namespace Game.Model.Rules
             if (arrestTarget.Type != PieceType.Thief) return false;
             return (((Thief)arrestTarget).Arrestable);
         }
-        
-        public bool isAllowedOn(Point pt, Piece p) {
-            switch(_board[pt].Type)
+
+        public static bool isAllowedOn(Board board, Point pt, Piece p)
+        {
+            switch (board[pt].Type)
             {
                 case BlockType.PoliceStation:
                     return p.Type == PieceType.Police;
@@ -101,6 +102,10 @@ namespace Game.Model.Rules
                 default:
                     return false;
             }
+        }
+        
+        public bool isAllowedOn(Point pt, Piece p) {
+            return isAllowedOn(_board, pt, p);
         }
 
         public void robBank(Thief t, Bank b) {
