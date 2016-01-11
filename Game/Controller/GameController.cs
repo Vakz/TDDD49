@@ -114,7 +114,7 @@ namespace Game.Controller
             if (AIPolice)
             {
                 AI = new PoliceAI(this);
-                AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height);
+                AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height));
             }
         }
 

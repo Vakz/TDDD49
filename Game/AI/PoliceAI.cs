@@ -8,6 +8,7 @@ using Game.Model.DataStructures;
 using Game.Controller;
 
 using Game.Model.Logic;
+using Game.Model.Rules;
 
 namespace Game.AI
 {
@@ -50,27 +51,30 @@ namespace Game.AI
             }
         }
 
-
-
-        private PathFinder         pathFinder;
-        private PathFinder.CanPass canPass;
+        private PathFinder pathFinder;
         public void setPathFinderInfo( PathFinder pathFinder ){
             this.pathFinder = pathFinder;
-            //this.canPass    = canPass;
         }
 
         public void think() {
             List<Point> pieces = game_controller.getCurrentPlayerPositions();
             List<Point> targets = getPreferredTargets();
 
+
             Dictionary<Point, Point> closest_thieves = new Dictionary<Point, Point>();
             foreach (Point police in pieces){
+                RuleEngine.PieceCanPassPoint canPass = new RuleEngine.PieceCanPassPoint(
+                    game_controller.Board.getPieceAt(police), game_controller.Board);
+                
                 Point closest_thief = pathFinder.getClosestPointOfInterest( police, targets, canPass );
                 closest_thieves[police] = closest_thief;
             }
 
             // testa om någon polis kan nå en tjuv direkt:
             foreach ( Point police in closest_thieves.Keys ) {
+                RuleEngine.PieceCanPassPoint canPass = new RuleEngine.PieceCanPassPoint(
+                    game_controller.Board.getPieceAt(police), game_controller.Board);
+
                 List<Point> path = pathFinder.getPathWithExactCost( police,
                                                                     closest_thieves[police],
                                                                     game_controller.DiceRoll,
@@ -82,6 +86,9 @@ namespace Game.AI
             }
             // testa om någon polis kan närma sig en tjuv:
             foreach (Point police in closest_thieves.Keys) {
+                RuleEngine.PieceCanPassPoint canPass = new RuleEngine.PieceCanPassPoint(
+                    game_controller.Board.getPieceAt(police), game_controller.Board);
+
                 // kolla vilka platser polisen kan röra sig till:
                 List<Point> points = pathFinder.getPointsWithExactCost(police, game_controller.DiceRoll, canPass);
                 // kolla vilken av dessa platser som är närmast tjuven som letas:

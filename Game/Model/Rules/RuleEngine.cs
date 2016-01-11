@@ -39,12 +39,12 @@ namespace Game.Model.Rules
 
         public bool isThiefSurrounded(List<Point> hideouts, Thief t)
         {
-            PieceCanPassPoint canPass = new PieceCanPassPoint(t, _board, this);
+            PieceCanPassPoint canPass = new PieceCanPassPoint(t, _board);
             return pathfinder.getClosestPointOfInterest(t.Position, hideouts, canPass) == Point.Error;
         }
 
         private bool canReach(Piece piece, Point dest, int cost) {
-            PieceCanPassPoint canPass = new PieceCanPassPoint(piece, _board, this);
+            PieceCanPassPoint canPass = new PieceCanPassPoint(piece, _board);
             if ( cost == -1 ) {
                 return pathfinder.getShortestPath(piece.Position, dest, canPass).Count - 1 != 0;
             } else if (_board[dest].Type == BlockType.EscapeAirport) {
@@ -55,13 +55,11 @@ namespace Game.Model.Rules
             }
         }
 
-        private class PieceCanPassPoint : PathFinder.CanPass {
+        public class PieceCanPassPoint : PathFinder.CanPass {
             private Piece piece;
             private Board board;
-            private RuleEngine rule_engine;
-            public PieceCanPassPoint(Piece piece, Board board, RuleEngine rule_engine){
+            public PieceCanPassPoint(Piece piece, Board board){
                 this.piece = piece;
-                this.rule_engine = rule_engine;
                 this.board = board;
             }
             public bool check(Point pt){
@@ -70,7 +68,7 @@ namespace Game.Model.Rules
                 Piece p = board.getPieceAt(pt);
                 if (piece.Type == PieceType.Thief && ((Thief)piece).Arrestable && p != null && p.Type == PieceType.Police) 
                     return false;
-                return rule_engine.isAllowedOn(pt, piece);
+                return RuleEngine.isAllowedOn(board, pt, piece);
             }
         }
 
