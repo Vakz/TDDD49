@@ -113,6 +113,14 @@ namespace Game.Controller
             Game.State.AIPolice = AIPolice;
             if (AIPolice)
             {
+                initializeAI(); 
+            }
+        }
+
+        private void initializeAI()
+        {
+            if (Game.State.AIPolice)
+            {
                 AI = new PoliceAI(this);
                 AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height));
                 Game.OnTurnEnd += delegate()
@@ -120,6 +128,7 @@ namespace Game.Controller
                     if (isAITurn) AI.think();
                 };
             }
+            if (isAITurn) AI.think();
         }
 
         public bool CurrentPlayerInJail
@@ -134,6 +143,7 @@ namespace Game.Controller
         public GameController()
         {
             Game = new BoardController();
+            if (Game.State.AIPolice) initializeAI();
         }
 
         public List<Point> getCurrentPlayerPositions()
@@ -159,7 +169,7 @@ namespace Game.Controller
         /// <returns>True if move was successful</returns>
         public bool move(Point src, Point dest)
         {
-            return = Game.move(src, dest);
+            return Game.move(src, dest);
         }
 
         /// <summary>

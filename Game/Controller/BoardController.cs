@@ -137,6 +137,7 @@ namespace Game.Controller
         {
             if (!State.GameRunning) throw new ApplicationException("Game is not running!");
             Piece p = State.Board.getPieceAt(src);
+            if (p == null) throw new IllegalMoveException("No piece at source position");
             if (!CurrentPlayer.allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
             else if (!ruleEngine.canMoveTo(p, dest, State.CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
             else return movePiece(p, dest);
@@ -204,9 +205,6 @@ namespace Game.Controller
         /// </summary>
         public void endTurn()
         {
-            // TODO: Check if any thieves are surrounded
-
-
             // When police turn ends, check if any thief is attempting to escape
             // All players have at least one piece, so using index 0 is safe.
             if (isPoliceTurn)

@@ -54,7 +54,8 @@ namespace Game.Model.Logic
         private void updateCosts( Point pos, CanPass canPass ){
             resetCosts();
             // ingen spelare får gå utanför kartan:
-            if (!validIndex(pos.X, pos.Y)) throw new ArgumentException("invalid start position");
+            if (!validIndex(pos.X, pos.Y))
+                throw new ArgumentException("invalid start position");
 
             costs[pos.X, pos.Y] = 0;
             List<Point> position_queue = new List<Point>{ pos };

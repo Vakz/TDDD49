@@ -9,6 +9,7 @@ using Game.Controller;
 
 using Game.Model.Logic;
 using Game.Model.Rules;
+using Game.Exceptions;
 
 namespace Game.AI
 {
@@ -67,7 +68,8 @@ namespace Game.AI
                     game_controller.Board.getPieceAt(police), game_controller.Board);
                 
                 Point closest_thief = pathFinder.getClosestPointOfInterest( police, targets, canPass );
-                closest_thieves[police] = closest_thief;
+                if ( closest_thief != Point.Error)
+                   closest_thieves[police] = closest_thief;
             }
 
             // testa om någon polis kan nå en tjuv direkt:
@@ -80,8 +82,10 @@ namespace Game.AI
                                                                     game_controller.DiceRoll,
                                                                     canPass );
                 if (path != null) {
-                    game_controller.move(police, closest_thieves[police]);
-                    return;
+                    try {
+                        game_controller.move(police, closest_thieves[police]);
+                        return;
+                    } catch (IllegalMoveException) { }
                 }
             }
             // testa om någon polis kan närma sig en tjuv:
@@ -94,8 +98,10 @@ namespace Game.AI
                 // kolla vilken av dessa platser som är närmast tjuven som letas:
                 Point point = pathFinder.getClosestPointOfInterest(closest_thieves[police], points, canPass);
                 if (point != Point.Error) {
-                    game_controller.move( police, point );
-                    return;
+                    try{
+                        game_controller.move(police, point);
+                        return;
+                    } catch (IllegalMoveException) { }
                 }
             }
             // annars rör sig polisen inte:
