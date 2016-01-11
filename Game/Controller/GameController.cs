@@ -115,7 +115,6 @@ namespace Game.Controller
             {
                 AI = new PoliceAI(this);
                 AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height));
-                AI.think();
                 Game.OnTurnEnd += delegate()
                 {
                     if (isAITurn) AI.think();
