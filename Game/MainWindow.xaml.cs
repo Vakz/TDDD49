@@ -103,8 +103,16 @@ namespace Game
             bool? save = w.ShowDialog();
             if (save.Value)
             {
-                Game.newGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
-                boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+                try
+                {
+                    Game.newGame(w.NumberOfPlayers, w.AIPolice.IsChecked.Value);
+                    boardCanvasTranslator = new BoardCanvasTranslator(BoardCanvas, Game.Board);
+                    
+                }
+                catch (Exception ex)
+                {
+                    setError(ex.Message);
+                }
                 UpdateInfoPanels();
             }
         }

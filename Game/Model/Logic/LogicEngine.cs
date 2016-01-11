@@ -37,7 +37,7 @@ namespace Game.Model.Logic
 
         public Piece anyPieceTypeOnBlockType(PieceType pt, BlockType bt)
         {
-            IReadOnlyCollection<Piece> pieces = board.Pieces.Where(s => s.Type == pt).ToList().AsReadOnly();
+            IReadOnlyCollection<Piece> pieces = board.Pieces.Where(s => s.Alive && s.Type == pt).ToList().AsReadOnly();
             return pieces.FirstOrDefault(s => board[s.Position].Type == bt);
         }
 
@@ -46,6 +46,17 @@ namespace Game.Model.Logic
         public bool isRobableBlock(Block b)
         {
             return new[] { BlockType.Bank, BlockType.TravelAgency }.Any(s => s == b.Type);
+        }
+
+        /// <summary>
+        /// Checks if the move from origin to dest was made by train
+        /// </summary>
+        /// <param name="origin">Point the piece originated from</param>
+        /// <param name="dest">Point the piece moved to</param>
+        /// <returns>True if move was made by train, else returns false</returns>
+        public bool movedByTrain(Point origin, Point dest)
+        {
+            return board[origin].Type == BlockType.TrainStop && board[dest].Type == BlockType.TrainStop;
         }
     }
 }

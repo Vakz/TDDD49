@@ -43,6 +43,7 @@ namespace Game.State
             DateTime newEdit = File.GetLastWriteTime(filename);
             if (newEdit.CompareTo(lastSave) > 0)
             {
+                // To avoid having our new save triggering another save, we add 3 seconds to the timestamp
                 lastSave = newEdit.AddSeconds(3);
                 if (OnManualSaveChange != null)
                     OnManualSaveChange();
