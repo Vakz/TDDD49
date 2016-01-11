@@ -97,8 +97,8 @@ namespace Game.Controller
             }
         }
 
-        private bool isAITurn() {
-            return Game.isPoliceTurn && Game.State.AIPolice;
+        private bool isAITurn {
+            get { return Game.isPoliceTurn && Game.State.AIPolice; }
         }
 
         /// <summary>
@@ -114,7 +114,12 @@ namespace Game.Controller
             if (AIPolice)
             {
                 AI = new PoliceAI(this);
-                AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height);
+                AI.setPathFinderInfo(new Model.Logic.PathFinder(Width, Height));
+                AI.think();
+                Game.OnTurnEnd += delegate()
+                {
+                    if (isAITurn) AI.think();
+                };
             }
         }
 
@@ -155,7 +160,7 @@ namespace Game.Controller
         /// <returns>True if move was successful</returns>
         public bool move(Point src, Point dest)
         {
-            return Game.move(src, dest);
+            return = Game.move(src, dest);
         }
 
         /// <summary>

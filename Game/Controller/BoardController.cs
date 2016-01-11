@@ -20,8 +20,8 @@ namespace Game.Controller
         private RuleEngine ruleEngine;
         private LogicEngine logicEngine;
         public Action OnReloadedState { get; set; }
-        
 
+        public Action OnTurnEnd { get; set; }
         public GameState State { get; set; }
         SaveHandler SaveHandler { get; set; }
 
@@ -274,6 +274,7 @@ namespace Game.Controller
             State.CurrentPlayerIndex = (State.CurrentPlayerIndex+1) % State.Players.Count;
             if (!State.Players[State.CurrentPlayerIndex].anyInPlay()) nextPlayer(); // Will cause multiple die rolls
             State.CurrentPlayerDiceRoll = LogicEngine.diceRoll();
+            if (OnTurnEnd != null) OnTurnEnd();
         }
     }
 }

@@ -121,14 +121,8 @@ namespace Game
         {
             try
             {
-                if(Game.attemptEscape()){
-                    setError("You have escaped!");
-                }
-                else
-                {
-                    NewTurn();
-                }
-                
+                if(Game.attemptEscape()) setError("You have escaped!");
+                else NewTurn();
             }
             catch (ArgumentException ae)
             {
