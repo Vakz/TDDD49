@@ -50,7 +50,14 @@ namespace Game.AI
             }
         }
 
-        public void setPathFinderInfo() { }
+
+
+        private PathFinder         pathFinder;
+        private PathFinder.CanPass canPass;
+        public void setPathFinderInfo( PathFinder pathFinder, PathFinder.CanPass canPass ){
+            this.pathFinder = pathFinder;
+            this.canPass    = canPass;
+        }
 
         public void think() {
             List<Point> pieces = game_controller.getCurrentPlayerPositions();
@@ -58,25 +65,26 @@ namespace Game.AI
 
             Dictionary<Point, Point> closest_thieves = new Dictionary<Point, Point>();
             foreach (Point police in pieces){
-                Point closest_thief = Point.Error;
-                foreach (Point thief in targets){
-                    if (manhattan_dist(police, thief) < manhattan_dist(police, closest_thief)){
-                        closest_thief = thief;
-                    }
-                }
+                Point closest_thief = pathFinder.getClosestPointOfInterest( police, targets, canPass );
                 closest_thieves[police] = closest_thief;
             }
 
-            Point from = Point.Error;
-            Point to   = Point.Error;
-
             // testa om någon polis kan nå en tjuv direkt:
-            foreach ( Point p in closest_thieves.Keys ) {
-                
+            foreach ( Point police in closest_thieves.Keys ) {
+                List<Point> path = pathFinder.getPathWithExactCost( police,
+                                                                    closest_thieves[police],
+                                                                    game_controller.DiceRoll,
+                                                                    canPass );
+                if (path != null) {
+                    game_controller.move(police, closest_thieves[police]);
+                    return;
+                }
             }
             // testa om någon polis kan närma sig en tjuv:
-
-            game_controller.move(from, to);
+            foreach (Point police in closest_thieves.Keys) {
+            
+            
+            }
             // annars rör sig polisen inte:
             game_controller.skip();
         }
