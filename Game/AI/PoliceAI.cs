@@ -82,12 +82,17 @@ namespace Game.AI
             }
             // testa om någon polis kan närma sig en tjuv:
             foreach (Point police in closest_thieves.Keys) {
-            
-            
+                // kolla vilka platser polisen kan röra sig till:
+                List<Point> points = pathFinder.getPointsWithExactCost(police, game_controller.DiceRoll, canPass);
+                // kolla vilken av dessa platser som är närmast tjuven som letas:
+                Point point = pathFinder.getClosestPointOfInterest(closest_thieves[police], points, canPass);
+                if (point != Point.Error) {
+                    game_controller.move( police, point );
+                    return;
+                }
             }
             // annars rör sig polisen inte:
             game_controller.skip();
         }
-
     }
 }
