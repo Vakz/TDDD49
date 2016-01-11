@@ -219,8 +219,6 @@ namespace Game.Controller
                 }
 
                 List<ThiefPlayer> escaping = aliveThieves.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
-                System.Console.WriteLine(aliveThieves.Count);
-                System.Console.WriteLine(escaping.Count);
                 foreach(ThiefPlayer tp in escaping)
                 {
                     int cost = State.Board[tp.Piece.Position].Type == BlockType.EscapeAirport ? 3000 : 1000;

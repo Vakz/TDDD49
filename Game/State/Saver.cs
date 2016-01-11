@@ -16,10 +16,19 @@ namespace Game.State
 
         public static void Save(string filename, GameState state)
         {
-            XDocument x = new XDocument();
-            x.Add(new XElement("Save", XmlGameState(state)));
-            x.Save(filename);
-            
+
+            // Purge with fire
+            while (true)
+            {
+                try
+                {
+                    XDocument x = new XDocument();
+                    x.Add(new XElement("Save", XmlGameState(state)));
+                    x.Save(filename);
+                    break;
+                }
+                catch (Exception) {}
+            }
         }
 
         private static XElement XmlGameState(GameState state)

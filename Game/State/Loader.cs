@@ -22,6 +22,7 @@ namespace Game.State
             if (!File.Exists(filename)) return null;
             XDocument doc;
             // Purge with fire
+            System.Console.WriteLine("LOADING");
             while (true)
             {
                 try
@@ -29,8 +30,8 @@ namespace Game.State
                     using (var reader = XmlReader.Create(filename))
                     {
                         doc = XDocument.Load(reader);
-                        break;
                     }
+                    break;
                     
                 }
                 catch (Exception) { }
