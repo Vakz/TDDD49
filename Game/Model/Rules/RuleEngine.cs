@@ -92,6 +92,7 @@ namespace Game.Model.Rules
                 case BlockType.EscapeAirport:
                 case BlockType.EscapeCheap:
                 case BlockType.Bank:
+                case BlockType.TravelAgency:
                     return p.Type == PieceType.Thief;
                 case BlockType.TrainStop:
                 case BlockType.Normal:

@@ -135,8 +135,11 @@ namespace Game.Controller
 
         public bool move(Point src, Point dest)
         {
+            if (!State.GameRunning) throw new ApplicationException("Game is not running!");
             Piece p = State.Board.getPieceAt(src);
-            return movePiece(p, dest);
+            if (!CurrentPlayer.allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
+            else if (!ruleEngine.canMoveTo(p, dest, State.CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
+            else return movePiece(p, dest);
         }
 
         /// <summary>
@@ -145,18 +148,15 @@ namespace Game.Controller
         /// <param name="p">Piece to be moved</param>
         /// <param name="pt">Destination</param>
         /// <returns>True if move was successful</returns>
-        public bool movePiece(Piece p, Point pt) {
-            if (!State.GameRunning) throw new ApplicationException("Game is not running!");
-            if (!CurrentPlayer.allowedToMovePiece(p)) throw new IllegalMoveException("Selected piece is not allowed to move this turn");
-            else if (!ruleEngine.canMoveTo(p, pt, State.CurrentPlayerDiceRoll)) throw new IllegalMoveException("Piece cannot move to the selected position");
-            else if (ruleEngine.canArrestAt(p, pt))
+        private bool movePiece(Piece p, Point pt) {
+            if (ruleEngine.canArrestAt(p, pt))
             {
                 Thief arrestTarget = (Thief)State.Board.getPieceAt(pt);
                 makeArrest(p, arrestTarget);
             }
             else
             {
-                if (movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
+                if (logicEngine.movedByTrain(p.Position, pt)) p.TrainMovementStreak++;
                 else p.TrainMovementStreak = 0;
                 p.Position = pt;
                 p.TurnsOnCurrentPosition = 0;
@@ -181,14 +181,7 @@ namespace Game.Controller
             Block b = State.Board[pt];
             if (logicEngine.isRobableBlock(State.Board[pt]))
             {
-                if (b.Type == BlockType.Bank)
-                {
-                    ruleEngine.robBank(t, (Bank)b);
-                }
-                else if (b.Type == BlockType.TravelAgency && ((TravelAgency)b).Money > 0)
-                {
-                    ruleEngine.robBank(t, (TravelAgency)b);
-                }
+                if ((b.Type == BlockType.Bank || b.Type == BlockType.TravelAgency) && ((Bank)b).Money > 0) ruleEngine.robBank(t, (Bank)b);
                 t.Arrestable = true;
             }
         }
@@ -207,17 +200,6 @@ namespace Game.Controller
         }
 
         /// <summary>
-        /// Checks if the move from origin to dest was made by train
-        /// </summary>
-        /// <param name="origin">Point the piece originated from</param>
-        /// <param name="dest">Point the piece moved to</param>
-        /// <returns>True if move was made by train, else returns false</returns>
-        private bool movedByTrain(Point origin, Point dest)
-        {
-            return State.Board[origin].Type == BlockType.TrainStop && State.Board[dest].Type == BlockType.TrainStop;
-        }
-
-        /// <summary>
         /// Makes all checks that should be made at the end of turn and moves the game to the next player
         /// </summary>
         public void endTurn()
@@ -229,7 +211,8 @@ namespace Game.Controller
             // All players have at least one piece, so using index 0 is safe.
             if (isPoliceTurn)
             {
-                foreach (Thief t in State.ThiefPlayers.Select<ThiefPlayer, Piece>(s => s.Piece))
+                List<ThiefPlayer> aliveThieves = State.ThiefPlayers.Where(s => s.Piece.Alive).ToList();
+                foreach (Thief t in aliveThieves.Select<ThiefPlayer, Piece>(s => s.Piece))
                 {
                     if (ruleEngine.isThiefSurrounded(State.Board.SpecialBlocks[BlockType.Hideout], t))
                     {
@@ -237,7 +220,9 @@ namespace Game.Controller
                     }
                 }
 
-                List<ThiefPlayer> escaping = State.ThiefPlayers.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
+                List<ThiefPlayer> escaping = aliveThieves.Where((new Func<ThiefPlayer, bool>(logicEngine.escapingThiefPred))).ToList();
+                System.Console.WriteLine(aliveThieves.Count);
+                System.Console.WriteLine(escaping.Count);
                 foreach(ThiefPlayer tp in escaping)
                 {
                     int cost = State.Board[tp.Piece.Position].Type == BlockType.EscapeAirport ? 3000 : 1000;
@@ -245,7 +230,11 @@ namespace Game.Controller
                     addTravelAgencyMoney(cost);
                     Piece p = logicEngine.anyPieceTypeOnBlockType(PieceType.Police, BlockType.Telegraph);
                     if (p != null) makeArrest(p, tp.Piece);
-                    else ruleEngine.removePieceFromGame(tp.Piece);
+                    else
+                    {
+                        ruleEngine.removePieceFromGame(tp.Piece);
+                        ruleEngine.removePieceFromGame(State.PolicePlayer.getControlledPieces().First(s => s.Alive));
+                    }
                 }
             }
             // At end of thief turn, check if arrested and potentially release

@@ -31,7 +31,7 @@
                 <dc:TextBlockWithTitle x:Name="PoliceMoney" Label="The police has confiscated"></dc:TextBlockWithTitle>
             </StatusBarItem>
         </StatusBar>
-        <dc:GameCanvas x:Name="BoardCanvas" Width="1550" Background="Aqua" Height="750" DockPanel.Dock="Top" />
+        <dc:GameCanvas x:Name="BoardCanvas" Width="930" Background="Aqua" Height="660" DockPanel.Dock="Top" />
         <StatusBar DockPanel.Dock="Bottom" Height="31" Width="Auto">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
