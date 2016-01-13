@@ -22,7 +22,6 @@ namespace Game.State
             if (!File.Exists(filename)) return null;
             XDocument doc;
             // Purge with fire
-            System.Console.WriteLine("LOADING");
             while (true)
             {
                 try
